@@ -1,6 +1,11 @@
+import os
 from distutils.core import setup
 
 from setuptools import find_packages
+
+def requirements(fname):
+    return [line.strip()
+            for line in open(os.path.join(os.path.dirname(__file__), fname))]
 
 setup(
     name='mwxml',
@@ -13,6 +18,7 @@ setup(
     license=open('LICENSE').read(),
     description='A set of utilities for processing MediaWiki XML dump data.',
     long_description=open('README.md').read(),
+    install_requires=requirements("requirements.txt"),
     test_suite='nose.collector',
     classifiers=[
         "Programming Language :: Python",
