@@ -100,7 +100,7 @@ def queue_files(paths):
     q = Queue()
     for path in paths:
         if isinstance(path, str):
-            q.put(files.normalize_path(path))
+            q.put(files.normalize_path(path)[0])
         else:
             q.put(path) # Probably a file already
     return q
