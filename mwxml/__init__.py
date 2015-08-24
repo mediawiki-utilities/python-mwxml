@@ -14,14 +14,14 @@ Complexity
     Streaming XML parsing is gross.  XML dumps are (1) some site meta data, (2)
     a collection of pages that contain (3) collections of revisions.  The
     module allows you to think about dump files in this way and ignore the
-    fact that you're streaming XML.  An :class:`Iterator` contains
-    site meta data and an iterator of :class:`Page`'s.  A
+    fact that you're streaming XML.  An :class:`Dump` contains
+    :class:`SiteInfo` and an iterator of :class:`Page`'s.  A
     :class:`Page` contains page meta data and an iterator of
     :class:`Revision`'s.  A :class:`Revision` contains revision meta data
-    including a :class:`Contributor` (if one a contributor was specified in the
+    including a :class:`User` (if one a contributor was specified in the
     XML).
 
 """
 from .map import map
 from .iteration import *
-__version__ = "0.0.2"
+__version__ = "0.0.3"
