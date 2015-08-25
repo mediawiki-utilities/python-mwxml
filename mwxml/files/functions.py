@@ -35,16 +35,21 @@ def extract_extension(path):
     else:
         return parts[-1]
 
-def normalize_path(path):
+def normalize_path(path_or_f):
     """
     Verifies that a file exists at a given path and that the file has a
     known extension type.
 
     :Parameters:
-        path : `str` | `file`
+        path_or_f : `str` | `file`
             the path to a dump file or a file handle
 
     """
+    if hasattr(path_or_f, "read"):
+        return path_or_f
+    else:
+        path = path_or_f
+    
     path = os.path.expanduser(path)
 
     # Check if exists and is a file
@@ -59,7 +64,7 @@ def normalize_path(path):
         raise FileTypeError("Extension {0} is not supported."
                             .format(repr(extension)))
 
-    return path, extension
+    return path
 
 
 def open(path_or_f):
@@ -76,7 +81,7 @@ def open(path_or_f):
     else:
         path = path_or_f
 
-    path, extension = normalize_path(path)
+    path, extension = normalize_path(path), extract_extension(path)
 
     open_func = FILE_OPENERS[extension]
 

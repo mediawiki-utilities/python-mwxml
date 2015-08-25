@@ -1,106 +1,126 @@
 import logging
+import time
 import traceback
-from multiprocessing import Queue, Value, cpu_count
+from multiprocessing import Process, Queue, cpu_count
 from queue import Empty
+from threading import Thread
 
 from .. import files
-from .processor import DONE, Processor
+from ..iteration import Dump
 
-logger = logging.getLogger("mw.dump.map")
+logger = logging.getLogger(__name__)
 
+def map(process, paths, threads=None):
+    threads = min(max(1, threads or cpu_count()), len(paths))
 
-def re_raise(error, path):
-    raise error
+    # Load paths into the queue
+    paths = enqueue(files.normalize_path(path) for path in paths)
 
+    # Prepare the output queue
+    output = Queue()
 
+    # Prepare the logs queue
+    qlogger = QueueLogger()
+    qlogger.start()
 
-def map(paths, process_dump, handle_error=re_raise,
-        threads=cpu_count(), output_buffer=100):
-    """
-    Maps a function across a set of dump files and returns
-    an (order not guaranteed) iterator over the output.
+    # Prepare the mappers and start them
+    mappers = [Mapper(process, paths, output, qlogger, str(i))
+               for i in range(threads)]
+    for mapper in mappers:
+        mapper.start()
 
-    The `process_dump` function must return an iterable object (such as a
-    generator).  If your process_dump function does not need to produce
-    output, make it return an empty `iterable` upon completion (like an empty
-    list).
-
-    :Parameters:
-        paths : iter( str )
-            a list of paths to dump files to process
-        process_dump : function( dump : :class:`~mw.xml_dump.Iterator`, path : str)
-            a function to run on every :class:`~mw.xml_dump.Iterator`
-        threads : int
-            the number of individual processing threads to spool up
-        output_buffer : int
-            the maximum number of output values to buffer.
-
-    :Returns:
-        An iterator over values yielded by calls to `process_dump()`
-    :Example:
-        .. code-block:: python
-
-            from mw import xml_dump
-
-            files = ["examples/dump.xml", "examples/dump2.xml"]
-
-            def page_info(dump, path):
-                for page in dump:
-
-                    yield page.id, page.namespace, page.title
-
-
-            for page_id, page_namespace, page_title in xml_dump.map(files, page_info):
-                print("\t".join([str(page_id), str(page_namespace), page_title]))
-    """
-    paths = list(paths)
-    pathsq = queue_files(paths)
-    outputq = Queue(maxsize=output_buffer)
-    running = Value('i', 0)
-    threads = max(1, min(int(threads), pathsq.qsize()))
-
-    processors = []
-
-    for i in range(0, threads):
-        processor = Processor(
-            pathsq,
-            outputq,
-            process_dump
-        )
-        processor.start()
-        processors.append(processor)
-
-    # output while processes are running
-    done = 0
-    while done < len(paths):
+    # Read from the output queue while there's still a mapper alive or something
+    # in the queue to read.
+    while sum(m.is_alive() for m in mappers) > 0 or not output.empty():
         try:
-            error, item = outputq.get(timeout=.25)
-        except Empty:
-            continue
+            # if there's nothing in the queue for 0.1 seconds, check if the
+            # any mappers are still alive
+            error, value = output.get(timeout=0.1)
 
-        if not error:
-            if item is DONE:
-                done += 1
+            if error is None:
+                yield value
             else:
-                yield item
-        else:
-            error, path = item
-            re_raise(error, path)
+                raise error
+
+        except Empty:
+            # This is going to happen when mappers aren't adding values to the
+            # queue fast enough
+            pass
 
 
-def queue_files(paths):
-    """
-    Produces a `multiprocessing.Queue` containing path for each value in
-    `paths` to be used by the `Processor`s.
+def enqueue(items):
+    queue = Queue()
+    for item in items:
+        queue.put(item)
 
-    :Parameters:
-        paths : iterable
-            the paths to add to the processing queue
-    """
-    q = Queue()
-    for path in paths:
-        if isinstance(path, str):
-            q.put(files.normalize_path(path)[0])
-        else:
-            q.put(path) # Probably a file already
-    return q
+    return queue
+
+
+class Mapper(Process):
+
+    def __init__(self, process, paths, output, logger, name=None):
+        super().__init__(name="XML Dump Mapper {0}".format(name), daemon=True)
+        self.process = process
+        self.paths = paths
+        self.output = output
+        self.logger = logger
+        self.stats = []
+
+    def run(self):
+        logger.info("{0}: Starting up.".format(self.name))
+        try:
+            while True:
+                path = self.paths.get(timeout=0.05) # Get a path
+                self.logger.info("{0}: Processing {1}".format(self.name, path))
+                try:
+                    start_time = time.time()
+                    dump = Dump.from_file(files.open(path))
+                    count = 0
+                    for value in self.process(dump, path):
+                        self.output.put((None, value))
+                        count += 1
+                    self.stats.append((path, count, time.time() - start_time))
+                except Exception as e:
+                    self.logger.error(
+                        "{0}: An error occured while processing {1}"
+                        .format(self.name, path)
+                    )
+                    formatted = traceback.format_exc(chain=False)
+                    self.logger.error("{0}: {1}".format(self.name, formatted))
+                    self.output.put((e, None))
+                    return # Exits without polluting stderr
+        except Empty:
+            self.logger.info("{0}: No more paths to process".format(self.name))
+            self.logger.info("\n" + "\n".join(self.format_stats()))
+
+    def format_stats(self):
+        for path, outputs, duration in self.stats:
+            yield "{0}: - Extracted {1} values from {2} in {3} seconds" \
+                        .format(self.name, outputs, path, duration)
+
+
+class QueueLogger(Thread):
+
+    def __init__(self, logger=None):
+        super().__init__(daemon=True)
+        self.queue = Queue()
+
+    def debug(self, message):
+        self.queue.put((logging.DEBUG, message))
+
+    def info(self, message):
+        self.queue.put((logging.INFO, message))
+
+    def warning(self, message):
+        self.queue.put((logging.WARNING, message))
+
+    def error(self, message):
+        self.queue.put((logging.ERROR, message))
+
+    def run(self):
+        while True:
+            try:
+                level, message = self.queue.get(timeout=0.1)
+                logger.log(level, message)
+            except Empty:
+                continue
