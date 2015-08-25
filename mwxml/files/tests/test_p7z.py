@@ -8,6 +8,5 @@ from ..functions import normalize_path
 
 def test_open_file_7z():
     path = os.path.join(os.path.dirname(__file__), "test.7z")
-    print(path)
-    f = p7z.open(normalize_path(path)[0])
+    f = p7z.open(normalize_path(path))
     eq_(f.read(), b"foobartest\n")

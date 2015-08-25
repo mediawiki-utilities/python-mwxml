@@ -15,7 +15,7 @@ def open(path):
             the path to the dump file to read
     """
     p = subprocess.Popen(
-        ['7z', 'e', '-so'] + [path],
+        ['7z', 'e', '-so', path],
         stdout=subprocess.PIPE,
         stderr=file_open(os.devnull, "w")
     )

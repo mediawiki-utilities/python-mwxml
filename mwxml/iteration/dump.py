@@ -1,4 +1,5 @@
 import io
+import logging
 
 import jsonable
 
@@ -8,6 +9,7 @@ from ..errors import MalformedXML
 from .page import Page
 from .site_info import SiteInfo
 
+logger = logging.getLogger(__name__)
 
 class Dump:
     """
