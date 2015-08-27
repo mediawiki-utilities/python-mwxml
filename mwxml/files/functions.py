@@ -1,3 +1,12 @@
+"""
+.. autofunction:: mwxml.files.functions.open
+
+.. autofunction:: mwxml.files.functions.normalize_path
+
+.. autofunction:: mwxml.files.functions.concat
+
+.. autofunction:: mwxml.files.functions.extract_extension
+"""
 import bz2
 import gzip
 import io
@@ -7,11 +16,6 @@ import subprocess
 
 from . import p7z
 from ..errors import FileTypeError
-
-EXT_RE = re.compile(r'\.([^\.]+)$')
-"""
-A regular expression for extracting the final extension of a file.
-"""
 
 FILE_OPENERS = {
     'xml': open,
@@ -27,6 +31,10 @@ def extract_extension(path):
     """
     Reads a file path and returns the extension or None if the path
     contains no extension.
+
+    :Parameters:
+        path : str
+            A filesystem path
     """
     filename = os.path.basename(path)
     parts = filename.split(".")
@@ -49,7 +57,7 @@ def normalize_path(path_or_f):
         return path_or_f
     else:
         path = path_or_f
-    
+
     path = os.path.expanduser(path)
 
     # Check if exists and is a file
@@ -125,4 +133,11 @@ class ConcatinatingTextReader(io.TextIOBase):
 
 
 def concat(*stream_items):
+    """
+    Performs a streaming concatenation of `str` or `file`.
+
+    :Parameters:
+        \*stream_items : `str` | `file`
+            A list of items to concatenate together
+    """
     return ConcatinatingTextReader(*stream_items)

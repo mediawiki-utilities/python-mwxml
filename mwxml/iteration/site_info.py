@@ -1,7 +1,6 @@
 import io
 
 import jsonable
-
 from mwtypes.util import none_or
 
 from ..element_iterator import ElementIterator
@@ -12,6 +11,26 @@ from .page import Page
 
 class SiteInfo(jsonable.Type):
     """
+    Represents the data from the <siteinfo> in a MediaWiki XML dump.
+
+    .. autoattribute:: mwxml.iteration.site_info.SiteInfo.name
+        :annotation: = The name of the site. : str | None
+
+    .. autoattribute:: mwxml.iteration.site_info.SiteInfo.dbname
+        :annotation: = The database name of the site. : str | None
+
+    .. autoattribute:: mwxml.iteration.site_info.SiteInfo.base
+        :annotation: = TODO: ??? : str | None
+
+    .. autoattribute:: mwxml.iteration.site_info.SiteInfo.generator
+        :annotation: = TODO: ??? : str | None
+
+    .. autoattribute:: mwxml.iteration.site_info.SiteInfo.case
+        :annotation: = TODO: ??? : str | None
+
+    .. autoattribute:: mwxml.iteration.site_info.SiteInfo.namespaces
+        :annotation: = list(mwxml.Namespace) | None
+
     """
     __slots__ = ('name', 'dbname', 'base', 'generator', 'case', 'namespaces')
 

@@ -11,6 +11,38 @@ from ..iteration import Dump
 logger = logging.getLogger(__name__)
 
 def map(process, paths, threads=None):
+    """
+    Implements a distributed stategy for processing XML files.  This
+    function constructs a set of `multiprocessing` threads (spread over
+    multiple cores) and uses an internal queue to aggregate outputs.  To use
+    this function, implement a `process()` function that takes two arguments
+    -- a :class:`~mwxml.iteration.dump.Dump` and the path the dump was loaded
+    from. Anything that this function `yield` s will be `yielded` in turn
+    from the `map()` function.
+
+    :Parameters:
+        paths : `iterable`(`str` | `file`)
+            a list of paths to dump files to process
+        process : `func`
+            A function that takes a :class:`~mwxml.iteration.dump.Dump` and the
+            path the dump was loaded from and yields
+        threads : int
+            the number of individual processing threads to spool up
+
+    :Example:
+
+        .. code-block:: python
+
+            from mwxml
+            files = ["examples/dump.xml", "examples/dump2.xml"]
+
+            def page_info(dump, path):
+                for page in dump:
+                    yield page.id, page.namespace, page.title
+
+            for id, namespace, title in mwxml.map(page_info, files):
+                print("\t".join([str(id), str(namespace), title]))
+    """
     threads = min(max(1, threads or cpu_count()), len(paths))
 
     # Load paths into the queue

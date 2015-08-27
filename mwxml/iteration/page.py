@@ -7,15 +7,16 @@ from .revision import Revision
 class Page(mwtypes.Page):
     """
     Page meta data and a :class:`~mw.xml_dump.Revision` iterator.  Instances of
-    this class can be called as iterators directly.  E.g.
+    this class can be called as iterators directly. See :class:`mwtypes.Page`
+    for a description of fields.
 
-    .. code-block:: python
+    :Example:
+        .. code-block:: python
 
-        page = mw.xml_dump.Page( ... )
+            page = mwxml.Page( ... )
 
-        for revision in page:
-            print("{0} {1}".format(revision.id, page_id))
-
+            for revision in page:
+                print("{0} {1}".format(revision.id, page_id))
     """
     def initialize(self, *args, revisions=None, **kwargs):
         super().initialize(*args, **kwargs)
@@ -91,7 +92,8 @@ class Page(mwtypes.Page):
 
 
 def normalize_title(title, namespace):
-    if namespace == 0:
+    title_parts = title.split(":", 1)
+    if namespace == 0 or len(title_parts) == 1:
         return title.replace("_", " ")
     else:
-        return title.split(":", 1)[1].replace("_", " ")
+        return title_parts[1].replace("_", " ")

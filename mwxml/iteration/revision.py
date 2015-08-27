@@ -4,7 +4,9 @@ from .util import consume_tags
 
 
 class User(mwtypes.Revision.User):
-
+    """
+    See :class:`mwtypes.Revision.User` for a description of fields
+    """
     TAG_MAP = {
         'id': lambda e: int(e.text),
         'username': lambda e: str(e.text),
@@ -23,7 +25,7 @@ class User(mwtypes.Revision.User):
 
 class Revision(mwtypes.Revision):
     """
-    Revision metadata and text
+    See :class:`mwtypes.Revision` for a description of fields
     """
 
     User = User # Adds from_element()

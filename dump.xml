@@ -3,6 +3,7 @@
            version="0.8" xml:lang="en">
   <siteinfo>
     <sitename>Wikipedia</sitename>
+    <dbname>enwiki</dbname>
     <base>http://en.wikipedia.org/wiki/Main_Page</base>
     <generator>MediaWiki 1.22wmf2</generator>
     <case>first-letter</case>

@@ -14,28 +14,43 @@ logger = logging.getLogger(__name__)
 class Dump:
     """
     XML Dump Iterator. Dump file meta data and a
-    :class:`~mw.xml_dump.Page` iterator.  Instances of this class can be
-    called as an iterator directly.  E.g.::
+    :class:`~mwxml.iteration.page.Page` iterator.  Instances of this class can
+    be called as an iterator directly.  Usually, you'll want to construct this
+    class using :func:`~mwxml.iteration.dump.Dump.from_file`.
 
-        from mw.xml_dump import Iterator
+    :Parameters:
+        site_info : :class:`~mwxml.iteration.site_info.SiteInfo`
+            The data from the <siteinfo> block
+        pages : `iterable`
+            An `iterable` of :class:`~mwxml.iteration.page.Page` in the order
+            they appear in the XML
 
-        # Construct dump file iterator
-        dump = Iterator.from_file(open("example/dump.xml"))
+    :Example:
+        .. code-block:: python
 
-        # Iterate through pages
-        for page in dump:
+            from mwxml import Dump
 
-            # Iterate through a page's revisions
-            for revision in page:
+            # Construct dump file iterator
+            dump = Dump.from_file(open("example/dump.xml"))
 
-                print(revision.id)
+            # Iterate through pages
+            for page in dump:
+
+                # Iterate through a page's revisions
+                for revision in page:
+
+                    print(revision.id)
 
     """
 
     def __init__(self, site_info, pages):
 
         self.site_info = SiteInfo(site_info)
-
+        """
+        Metadata from the <siteinfo> tag :
+        :class:`~mwxml.iteration.site_info.SiteInfo`
+        """
+        
         # Should be a lazy generator of page info
         self.pages = pages or range(0)
 
@@ -89,12 +104,27 @@ class Dump:
 
     @classmethod
     def from_file(cls, f):
+        """
+        Constructs a :class:`~mwxml.iteration.dump.Dump` from a `file` pointer.
+
+        :Parameters:
+            f : `file`
+                A plain text file pointer containing XML to process
+        """
         element = ElementIterator.from_file(f)
         assert element.tag == "mediawiki"
         return cls.from_element(element)
 
     @classmethod
     def from_page_xml(cls, page_xml):
+        """
+        Constructs a :class:`~mwxml.iteration.dump.Dump` from a <page> block.
+
+        :Parameters:
+            page_xml : `str` | `file`
+                Either a plain string or a file containing <page> block XML to
+                process
+        """
         header = """
         <mediawiki xmlns="http://www.mediawiki.org/xml/export-0.5/"
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
