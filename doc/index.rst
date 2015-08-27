@@ -42,6 +42,13 @@ Basic example
     3
 
 
+Authors
+-------
+* Aaron Halfaker -- https://github.com/halfak
+
+Pull requests welcome @ https://github.com/halfak/python-mwxml
+
+
 Indices and tables
 ==================
 
