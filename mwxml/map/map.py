@@ -10,18 +10,19 @@ from ..iteration import Dump
 
 logger = logging.getLogger(__name__)
 
+
 def map(process, paths, threads=None):
     """
     Implements a distributed stategy for processing XML files.  This
-    function constructs a set of `multiprocessing` threads (spread over
+    function constructs a set of py:mod:`multiprocessing` threads (spread over
     multiple cores) and uses an internal queue to aggregate outputs.  To use
     this function, implement a `process()` function that takes two arguments
-    -- a :class:`~mwxml.iteration.dump.Dump` and the path the dump was loaded
-    from. Anything that this function `yield` s will be `yielded` in turn
-    from the `map()` function.
+    -- a :class:`mwxml.Dump` and the path the dump was loaded
+    from. Anything that this function ``yield``s will be `yielded` in turn
+    from the :func:`mwxml.map` function.
 
     :Parameters:
-        paths : `iterable`(`str` | `file`)
+        paths : `iterable` ( `str` | `file` )
             a list of paths to dump files to process
         process : `func`
             A function that takes a :class:`~mwxml.iteration.dump.Dump` and the
@@ -31,17 +32,16 @@ def map(process, paths, threads=None):
 
     :Example:
 
-        .. code-block:: python
-
-            from mwxml
-            files = ["examples/dump.xml", "examples/dump2.xml"]
-
-            def page_info(dump, path):
-                for page in dump:
-                    yield page.id, page.namespace, page.title
-
-            for id, namespace, title in mwxml.map(page_info, files):
-                print("\t".join([str(id), str(namespace), title]))
+        >>> import mwxml
+        >>> files = ["examples/dump.xml", "examples/dump2.xml"]
+        >>>
+        >>> def page_info(dump, path):
+        ...     for page in dump:
+        ...         yield page.id, page.namespace, page.title
+        ...
+        >>> for id, namespace, title in mwxml.map(page_info, files):
+        ...     print(id, namespace, title)
+        ...
     """
     threads = min(max(1, threads or cpu_count()), len(paths))
 
@@ -61,8 +61,8 @@ def map(process, paths, threads=None):
     for mapper in mappers:
         mapper.start()
 
-    # Read from the output queue while there's still a mapper alive or something
-    # in the queue to read.
+    # Read from the output queue while there's still a mapper alive or
+    # something in the queue to read.
     while sum(m.is_alive() for m in mappers) > 0 or not output.empty():
         try:
             # if there's nothing in the queue for 0.1 seconds, check if the
@@ -102,7 +102,7 @@ class Mapper(Process):
         logger.info("{0}: Starting up.".format(self.name))
         try:
             while True:
-                path = self.paths.get(timeout=0.05) # Get a path
+                path = self.paths.get(timeout=0.05)  # Get a path
                 self.logger.info("{0}: Processing {1}".format(self.name, path))
                 try:
                     start_time = time.time()
@@ -120,7 +120,7 @@ class Mapper(Process):
                     formatted = traceback.format_exc(chain=False)
                     self.logger.error("{0}: {1}".format(self.name, formatted))
                     self.output.put((e, None))
-                    return # Exits without polluting stderr
+                    return  # Exits without polluting stderr
         except Empty:
             self.logger.info("{0}: No more paths to process".format(self.name))
             self.logger.info("\n" + "\n".join(self.format_stats()))
@@ -128,7 +128,7 @@ class Mapper(Process):
     def format_stats(self):
         for path, outputs, duration in self.stats:
             yield "{0}: - Extracted {1} values from {2} in {3} seconds" \
-                        .format(self.name, outputs, path, duration)
+                  .format(self.name, outputs, path, duration)
 
 
 class QueueLogger(Thread):

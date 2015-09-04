@@ -80,9 +80,8 @@ def test_map_error():
             if page.id == 2:
                 raise TypeError("Fake error")
 
-    pages = 0
     for doc in map([f], process_dump):
-        page_id = doc['page_id']
+        assert 'page_id' in doc
 
 
 def test_map_error_handler():
@@ -114,6 +113,7 @@ def test_map_error_handler():
         pages += 1
 
     eq_(pages, 2)
+
 
 @raises(ValueError)
 def test_complex_error_handler():

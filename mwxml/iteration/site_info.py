@@ -1,12 +1,7 @@
-import io
-
 import jsonable
 from mwtypes.util import none_or
 
-from ..element_iterator import ElementIterator
-from ..errors import MalformedXML
 from .namespace import Namespace
-from .page import Page
 
 
 class SiteInfo(jsonable.Type):

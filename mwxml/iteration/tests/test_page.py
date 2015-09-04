@@ -46,7 +46,7 @@ def test_page():
     eq_(page.title, "AccessibleComputing")
     eq_(page.namespace, 0)
     eq_(page.redirect, "Computer accessibility")
-    eq_(page.restrictions, []) # Should be known to be empty
+    eq_(page.restrictions, [])  # Should be known to be empty
 
     revision = next(page)
     eq_(revision.id, 233192)

@@ -1,8 +1,7 @@
 import io
 
-from nose.tools import assert_is_instance, eq_
-
 import mwtypes
+from nose.tools import assert_is_instance, eq_
 
 from ..dump import Dump
 from ..page import Page
@@ -10,8 +9,11 @@ from ..revision import Revision
 
 
 SAMPLE_XML = """
-<mediawiki xmlns="http://www.mediawiki.org/xml/export-0.8/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http
-://www.mediawiki.org/xml/export-0.8/ http://www.mediawiki.org/xml/export-0.8.xsd" version="0.8" xml:lang="en">
+<mediawiki xmlns="http://www.mediawiki.org/xml/export-0.8/"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.8/
+                               http://www.mediawiki.org/xml/export-0.8.xsd"
+           version="0.8" xml:lang="en">
   <siteinfo>
     <sitename>Wikipedia</sitename>
     <base>http://en.wikipedia.org/wiki/Main_Page</base>
@@ -111,7 +113,6 @@ def test_skipping():
     revision = next(page)
     eq_(revision.id, 3)
     eq_(revision.timestamp, mwtypes.Timestamp("2004-08-11T09:04:08Z"))
-
 
 
 def test_from_page_xml():

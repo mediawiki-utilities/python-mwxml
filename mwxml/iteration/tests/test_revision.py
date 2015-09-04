@@ -1,6 +1,5 @@
-from nose.tools import eq_
-
 import mwtypes
+from nose.tools import eq_
 
 from ...element_iterator import ElementIterator
 from ..revision import Revision
@@ -59,6 +58,7 @@ def test_revision():
     eq_(revision.deleted.text, True)
     eq_(revision.deleted.comment, True)
     eq_(revision.deleted.user, True)
+
 
 def test_revision_user():
     XML = """

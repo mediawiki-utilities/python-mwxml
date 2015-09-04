@@ -9,8 +9,6 @@ except ImportError:
     import xml.etree.ElementTree as etree
 
 
-
-
 def trim_ns(tag):
     return tag[tag.find("}") + 1:]
 
@@ -91,7 +89,8 @@ class ElementIterator:
             self.complete()
             return self.element.text
         else:
-            raise AttributeError("%s has no attribute %r" % (self.__class__.__name__, attr))
+            raise AttributeError("{0} has no attribute {1}"
+                                 .format(self.__class__.__name__, attr))
 
     @classmethod
     def from_file(cls, f):
@@ -101,9 +100,9 @@ class ElementIterator:
             event, element = next(pointer)
             return cls(element, pointer)
         except ParseError as e:
-            raise ParseError(
-                    "{0}: {1}...".format(str(e),
-                                         str(f.read(500), 'utf-8', 'replace')))
+            raise ParseError("{0}: {1}..."
+                             .format(str(e),
+                                     str(f.read(500), 'utf-8', 'replace')))
 
     @classmethod
     def from_string(cls, string):

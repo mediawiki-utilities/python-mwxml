@@ -19,3 +19,5 @@ Functions
 .. automodule:: mwxml.files.functions
 """
 from .functions import open, normalize_path, concat, extract_extension
+
+__all__ = [open, normalize_path, concat, extract_extension]

@@ -1,18 +1,16 @@
 """
-.. autofunction:: mwxml.files.functions.open
+.. autofunction:: mwxml.files.open
 
-.. autofunction:: mwxml.files.functions.normalize_path
+.. autofunction:: mwxml.files.normalize_path
 
-.. autofunction:: mwxml.files.functions.concat
+.. autofunction:: mwxml.files.concat
 
-.. autofunction:: mwxml.files.functions.extract_extension
+.. autofunction:: mwxml.files.extract_extension
 """
 import bz2
 import gzip
 import io
 import os
-import re
-import subprocess
 
 from . import p7z
 from ..errors import FileTypeError
@@ -26,6 +24,7 @@ FILE_OPENERS = {
 """
 Maps extensions to the strategy for opening/decompressing a file
 """
+
 
 def extract_extension(path):
     """
@@ -42,6 +41,7 @@ def extract_extension(path):
         return None
     else:
         return parts[-1]
+
 
 def normalize_path(path_or_f):
     """
@@ -95,6 +95,7 @@ def open(path_or_f):
 
     return open_func(path)
 
+
 class ConcatinatingTextReader(io.TextIOBase):
 
     def __init__(self, *items):
@@ -108,7 +109,8 @@ class ConcatinatingTextReader(io.TextIOBase):
 
         if len(self.items) > 0:
             line = self.items[0].readline()
-            if line == "": self.items.pop(0)
+            if line == "":
+                self.items.pop(0)
         else:
             line = ""
 
@@ -120,7 +122,7 @@ class ConcatinatingTextReader(io.TextIOBase):
                 byte_vals = self.items[0].read(size)
                 yield byte_vals
                 if len(byte_vals) < size:
-                    size = size - len(byte_vals) # Decrement bytes
+                    size = size - len(byte_vals)  # Decrement bytes
                     self.items.pop(0)
                 else:
                     break
@@ -128,8 +130,6 @@ class ConcatinatingTextReader(io.TextIOBase):
         else:
             for item in self.items:
                 yield item.read()
-
-
 
 
 def concat(*stream_items):

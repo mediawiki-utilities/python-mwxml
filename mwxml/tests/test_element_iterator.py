@@ -1,7 +1,8 @@
 import io
 
 from nose.tools import eq_
-from ..element_iterator import EventPointer, ElementIterator
+
+from ..element_iterator import ElementIterator, EventPointer
 
 
 TEST_XML = """
@@ -97,7 +98,7 @@ def test_skipping_iterator():
     foo_element = ElementIterator.from_file(io.StringIO(TEST_XML))
     foo_iterator = iter(foo_element)
 
-    bar_element = next(foo_iterator)
+    next(foo_iterator)
 
     derp_element = next(foo_iterator)
     eq_(derp_element.tag, "derp")

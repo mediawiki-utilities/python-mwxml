@@ -2,18 +2,18 @@
 These classes form the basis of iterative processing of XML dumps.  These
 datatypes are based on those found in http://pythonhosted.org/mwtypes
 
-.. autoclass:: mwxml.iteration.dump.Dump
+.. autoclass:: mwxml.Dump
     :members:
 
-.. autoclass:: mwxml.iteration.site_info.SiteInfo
+.. autoclass:: mwxml.SiteInfo
 
-.. autoclass:: mwxml.iteration.page.Page
+.. autoclass:: mwxml.Page
     :inherited-members:
 
-.. autoclass:: mwxml.iteration.revision.Revision
+.. autoclass:: mwxml.Revision
     :inherited-members:
 
-.. autoclass:: mwxml.iteration.namespace.Namespace
+.. autoclass:: mwxml.Namespace
     :inherited-members:
 
 """
@@ -21,3 +21,6 @@ from .dump import Dump
 from .page import Page
 from .revision import Revision
 from .site_info import SiteInfo
+from .namespace import Namespace
+
+__all__ = [Dump, Page, Revision, SiteInfo, Namespace]

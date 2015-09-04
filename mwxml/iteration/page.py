@@ -82,7 +82,6 @@ class Page(mwtypes.Page):
         # comment above.
         revisions = cls.load_revisions(first_revision, element)
 
-
         # Normalize title
         title = normalize_title(title, namespace)
 

@@ -1,7 +1,4 @@
-import io
 import logging
-
-import jsonable
 
 from .. import files
 from ..element_iterator import ElementIterator
@@ -10,6 +7,7 @@ from .page import Page
 from .site_info import SiteInfo
 
 logger = logging.getLogger(__name__)
+
 
 class Dump:
     """
@@ -50,7 +48,7 @@ class Dump:
         Metadata from the <siteinfo> tag :
         :class:`~mwxml.iteration.site_info.SiteInfo`
         """
-        
+
         # Should be a lazy generator of page info
         self.pages = pages or range(0)
 
@@ -94,8 +92,6 @@ class Dump:
             else:
                 raise MalformedXML("Unexpected tag found when processing " +
                                    "a <mediawiki>: '{0}'".format(tag))
-
-
 
         # Consume all <page>
         pages = cls.load_pages(first_page, element)

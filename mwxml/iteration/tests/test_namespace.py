@@ -13,7 +13,6 @@ def test_namespace():
     eq_(namespace.case, "first-letter")
     eq_(namespace.canonical, None)
 
-
     XML = '<namespace key="711" case="first-letter">TimedText talk</namespace>'
     namespace = Namespace.from_element(ElementIterator.from_string(XML))
     eq_(namespace.id, 711)

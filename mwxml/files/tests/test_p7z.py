@@ -1,6 +1,6 @@
 import os.path
 
-from nose.tools import eq_, raises
+from nose.tools import eq_
 
 from .. import p7z
 from ..functions import normalize_path

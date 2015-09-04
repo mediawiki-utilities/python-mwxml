@@ -1,9 +1,8 @@
 import os
 import subprocess
 
-from ..errors import FileTypeError
-
 file_open = open
+
 
 def open(path):
     """

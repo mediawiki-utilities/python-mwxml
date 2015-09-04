@@ -1,11 +1,13 @@
 import mwtypes
 
+from ..errors import MalformedXML
 from .util import consume_tags
 
 
 class User(mwtypes.Revision.User):
     """
-    See :class:`mwtypes.Revision.User` for a description of fields
+    User `id` and `text`.  See :class:`mwtypes.Revision.User` for a
+    description of fields.
     """
     TAG_MAP = {
         'id': lambda e: int(e.text),
@@ -25,10 +27,11 @@ class User(mwtypes.Revision.User):
 
 class Revision(mwtypes.Revision):
     """
-    See :class:`mwtypes.Revision` for a description of fields
+    Revision metadata and text.  See :class:`mwtypes.Revision` for a
+    description of fields.
     """
 
-    User = User # Adds from_element()
+    User = User  # Adds from_element()
 
     @classmethod
     def from_element(cls, element):
@@ -47,7 +50,6 @@ class Revision(mwtypes.Revision):
         parent_id = None
         model = None
         format = None
-
 
         for sub_element in element:
             tag = sub_element.tag
@@ -81,7 +83,6 @@ class Revision(mwtypes.Revision):
 
         deleted = cls.Deleted(comment=comment_deleted, text=text_deleted,
                               user=user_deleted)
-
 
         return cls(
             id, timestamp,
