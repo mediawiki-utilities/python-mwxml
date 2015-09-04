@@ -6,7 +6,7 @@ from .revision import Revision
 
 class Page(mwtypes.Page):
     """
-    Page meta data and a :class:`~mw.xml_dump.Revision` iterator.  Instances of
+    Page meta data and a :class:`~mwxml.Revision` iterator.  Instances of
     this class can be called as iterators directly. See :class:`mwtypes.Page`
     for a description of fields.
 
