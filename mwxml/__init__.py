@@ -23,6 +23,7 @@ Performance
 """
 from .map import map
 from .iteration import Dump, Page, Revision, SiteInfo, Namespace
-__version__ = "0.1.0"
 
 __all__ = [map, Dump, Page, Revision, SiteInfo, Namespace]
+
+__version__ = "0.1.1"
