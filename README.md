@@ -1,4 +1,4 @@
-# MediaWiki XML dump processing
+# MediaWiki XML
 
 This library contains a collection of utilities for efficiently 
 processing MediaWiki’s XML database dumps. There are two 
@@ -34,3 +34,7 @@ processing of many XML dump files at the same time.
     
 ## Author
 * Aaron Halfaker -- https://github.com/halfak
+
+## See also 
+* http://dumps.wikimedia.org/
+* http://community.wikia.com/wiki/Help:Database_download
