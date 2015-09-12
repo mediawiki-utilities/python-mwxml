@@ -1,7 +1,15 @@
 # MediaWiki XML dump processing
 
-This library provides a set of utilities for efficiently processing MediaWiki's
-XML dump output  
+This library contains a collection of utilities for efficiently 
+processing MediaWiki’s XML database dumps. There are two 
+important concerns that this module intends to address: 
+complexity and performance of streaming XML parsing.  This library
+enables memory efficent stream processing of XML dumps with 
+a simple [`iterator`](https://pythonhosted.org/mwxml/iteration.html) 
+strategy.  This library also implements a distributed
+processing strategy (see 
+[`map()`](https://pythonhosted.org/mwxml/map.html)) that enables parallel
+processing of many XML dump files at the same time. 
 
 * **Installation:** ``pip install mwxml``
 * **Documentation:** https://pythonhosted.org/mwxml
