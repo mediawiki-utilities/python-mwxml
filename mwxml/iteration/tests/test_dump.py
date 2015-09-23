@@ -149,3 +149,43 @@ def test_from_page_xml():
     revision = next(page)
     eq_(revision.id, 2)
     eq_(revision.timestamp, mwtypes.Timestamp("2004-08-10T09:04:08Z"))
+
+
+OLD_XML = """
+<mediawiki xmlns="http://www.mediawiki.org/xml/export-0.8/"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.8/
+                               http://www.mediawiki.org/xml/export-0.8.xsd"
+           version="0.8" xml:lang="en">
+  <siteinfo>
+    <sitename>Wikipedia</sitename>
+    <base>http://en.wikipedia.org/wiki/Main_Page</base>
+    <generator>MediaWiki 1.22wmf2</generator>
+    <case>first-letter</case>
+    <namespaces>
+      <namespace key="0" case="first-letter" />
+      <namespace key="1" case="first-letter">Talk</namespace>
+    </namespaces>
+  </siteinfo>
+  <page>
+    <title>Talk:Foo</title>
+    <id>1</id>
+    <revision>
+      <id>1</id>
+      <timestamp>2004-08-09T09:04:08Z</timestamp>
+    </revision>
+    <revision>
+      <id>2</id>
+      <timestamp>2004-08-10T09:04:08Z</timestamp>
+    </revision>
+  </page>
+</mediawiki>"""
+
+def test_old_dump():
+    f = io.StringIO(OLD_XML)
+
+    dump = Dump.from_file(f)
+
+    page = next(dump)
+
+    eq_(page.namespace, 1)

@@ -51,8 +51,7 @@ def test_revision():
     </revision>
     """
     revision = Revision.from_element(ElementIterator.from_string(XML))
-    eq_(revision.user.id, None)
-    eq_(revision.user.text, None)
+    eq_(revision.user, None)
     eq_(revision.comment, None)
     eq_(revision.text, None)
     eq_(revision.deleted.text, True)

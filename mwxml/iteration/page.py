@@ -16,7 +16,7 @@ class Page(mwtypes.Page):
             page = mwxml.Page( ... )
 
             for revision in page:
-                print("{0} {1}".format(revision.id, page_id))
+                print("{0} {1}".format(revision.id, page.id))
     """
     def initialize(self, *args, revisions=None, **kwargs):
         super().initialize(*args, **kwargs)
@@ -25,10 +25,14 @@ class Page(mwtypes.Page):
         self.__revisions = revisions
 
     def __iter__(self):
-        return self.__revisions
+        for revision in self.__revisions:
+            revision.page = self
+            yield revision
 
     def __next__(self):
-        return next(self.__revisions)
+        revision = next(self.__revisions)
+        revision.page = self
+        return revision
 
     @classmethod
     def load_revisions(cls, first_revision, element):
@@ -45,7 +49,7 @@ class Page(mwtypes.Page):
                                    "Instead saw <{0}>".format(tag))
 
     @classmethod
-    def from_element(cls, element):
+    def from_element(cls, element, namespace_map=None):
         title = None
         namespace = None
         id = None
@@ -82,17 +86,34 @@ class Page(mwtypes.Page):
         # comment above.
         revisions = cls.load_revisions(first_revision, element)
 
-        # Normalize title
-        title = normalize_title(title, namespace)
+        # Normalize title and extract namespace
+        ns_name, title = extract_namespace(title)
+
+        # <namespace> is missing in old dumps.  Try to use the namespace map.
+        if namespace is None and namespace_map is not None:
+            if ns_name is None:
+                namespace = 0
+            else:
+                if ns_name in namespace_map:
+                    namespace = namespace_map[ns_name].id
+                else:
+                    logger.warn("Could not lookup namespace {0}"
+                                .format(ns_name))
+
+
+
 
         # Construct class
         return cls(id, title, namespace, redirect=redirect,
                    restrictions=restrictions, revisions=revisions)
 
 
-def normalize_title(title, namespace):
+def normalize_title(title):
+    return title.replace("_", " ")
+
+def extract_namespace(title):
     title_parts = title.split(":", 1)
-    if namespace == 0 or len(title_parts) == 1:
-        return title.replace("_", " ")
+    if len(title_parts) == 1:
+        return None, normalize_title(title)
     else:
-        return title_parts[1].replace("_", " ")
+        return title_parts[0], normalize_title(title_parts[1])

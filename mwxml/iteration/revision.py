@@ -58,8 +58,9 @@ class Revision(mwtypes.Revision):
             elif tag == "timestamp":
                 timestamp = mwtypes.Timestamp(sub_element.text)
             elif tag == "contributor":
-                user = cls.User.from_element(sub_element)
                 user_deleted = sub_element.attr('deleted') is not None
+                if not user_deleted:
+                    user = cls.User.from_element(sub_element)
             elif tag == "minor":
                 minor = True
             elif tag == "sha1":
@@ -71,11 +72,13 @@ class Revision(mwtypes.Revision):
             elif tag == "format":
                 format = sub_element.text
             elif tag == "comment":
-                comment = sub_element.text
                 comment_deleted = sub_element.attr('deleted') is not None
+                if not comment_deleted:
+                    comment = sub_element.text
             elif tag == "text":
-                text = sub_element.text
                 text_deleted = sub_element.attr('deleted') is not None
+                if not text_deleted:
+                    text = sub_element.text
                 bytes = sub_element.attr('bytes')
             else:
                 raise MalformedXML("Unexpected tag found when processing " +

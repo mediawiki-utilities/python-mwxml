@@ -1,6 +1,7 @@
 from nose.tools import eq_
 
 from ...element_iterator import ElementIterator
+from ..namespace import Namespace
 from ..page import Page
 
 
@@ -50,6 +51,32 @@ def test_page():
 
     revision = next(page)
     eq_(revision.id, 233192)
+    eq_(revision.page, page)
 
     revision = next(page)
     eq_(revision.id, 862220)
+
+def test_old_page():
+    XML = """
+    <page>
+        <title>Talk:AccessibleComputing</title>
+        <id>10</id>
+        <redirect title="Computer accessibility" />
+        <revision>
+          <id>233192</id>
+          <timestamp>2001-01-21T02:12:21Z</timestamp>
+          <contributor>
+            <username>RoseParks</username>
+            <id>99</id>
+          </contributor>
+          <comment>*</comment>
+          <model>wikitext</model>
+          <format>text/x-wiki</format>
+          <text xml:space="preserve">Text of rev 233192</text>
+          <sha1>8kul9tlwjm9oxgvqzbwuegt9b2830vw</sha1>
+        </revision>
+    </page>
+    """
+    page = Page.from_element(ElementIterator.from_string(XML),
+                             {"Talk": Namespace(1, "Talk")})
+    eq_(page.namespace, 1)

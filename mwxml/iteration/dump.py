@@ -1,6 +1,7 @@
 import logging
 
-from .. import files
+import mwtypes.files
+
 from ..element_iterator import ElementIterator
 from ..errors import MalformedXML
 from .page import Page
@@ -59,15 +60,15 @@ class Dump:
         return next(self.pages)
 
     @classmethod
-    def load_pages(cls, first_page, element):
+    def load_pages(cls, first_page, element, namespace_map):
         if first_page is not None:
-            yield Page.from_element(first_page)
+            yield Page.from_element(first_page, namespace_map)
 
         for sub_element in element:
             tag = sub_element.tag
 
             if tag == "page":
-                yield Page.from_element(sub_element)
+                yield Page.from_element(sub_element, namespace_map)
             else:
                 assert MalformedXML("Expected to see <page>.  " +
                                     "Instead saw <{0}>".format(tag))
@@ -93,8 +94,14 @@ class Dump:
                 raise MalformedXML("Unexpected tag found when processing " +
                                    "a <mediawiki>: '{0}'".format(tag))
 
+        namespace_map = None
+        if site_info.namespaces is not None:
+            namespace_map = {}
+            for namespace in site_info.namespaces:
+                namespace_map[namespace.name] = namespace
+
         # Consume all <page>
-        pages = cls.load_pages(first_page, element)
+        pages = cls.load_pages(first_page, element, namespace_map)
 
         return cls(site_info, pages)
 
@@ -133,4 +140,4 @@ class Dump:
 
         footer = "</mediawiki>"
 
-        return cls.from_file(files.concat(header, page_xml, footer))
+        return cls.from_file(mwtypes.files.concat(header, page_xml, footer))
