@@ -1,8 +1,8 @@
 import logging
 
+import mwtypes.files
 import para
 
-from .. import files
 from ..iteration import Dump
 
 logger = logging.getLogger(__name__)
@@ -40,10 +40,10 @@ def map(process, paths, threads=None):
         ...     print(id, namespace, title)
         ...
     """
-    paths = [files.normalize_path(path) for path in paths]
+    paths = [mwtypes.files.normalize_path(path) for path in paths]
 
     def process_path(path):
-        dump = Dump.from_file(files.open(path))
+        dump = Dump.from_file(mwtypes.files.reader(path))
         yield from process(dump, path)
 
     yield from para.map(process_path, paths, mappers=threads)
