@@ -1,7 +1,11 @@
+import logging
+
 import mwtypes
 
 from ..errors import MalformedXML
 from .revision import Revision
+
+logger = logging.getLogger(__name__)
 
 
 class Page(mwtypes.Page):
