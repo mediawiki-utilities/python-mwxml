@@ -4,33 +4,44 @@ them to stdout if they validate -- otherwise, complains noisily.
 
 Usage:
     validate (-h|--help)
-    validate <schema>
+    validate [<input-file>...] --schema=<path> [--threads=<num>]
+             [--output=<path>] [--compress=<type>] [--verbose] [--debug]
 
 Options:
-    -h|--help      Print this documentation
-    <schema>       The path of a JSON schema to use for validation
+    -h|--help           Print this documentation
+    <input-file>        The path to file containing a sequence of JSON
+                        revision documents [default: <stdin>]
+    --schema=<path>     The path to a schema to apply.
+    --threads=<num>     If a collection of files are provided, how many
+                        processor threads? [default: <cpu_count>]
+    --output=<path>     Write output to a directory with one output file
+                        per input path.  [default: <stdout>]
+    --compress=<type>   If set, output written to the output-dir will be
+                        compressed in this format. [default: bz2]
+    --verbose           Print progress information to stderr.  Kind of a
+                        mess when running multi-threaded.
+    --debug             Print debug logs.
 """
 import json
-import sys
 
-import docopt
 import jsonschema
+import mwcli
 
 
-def main(argv=None):
-    args = docopt.docopt(__doc__, argv=argv)
+def process_args(args):
+    return {'schema': json.load(open(args['--schema']))}
 
-    schema = json.load(open(args['<schema>']))
 
-    run((json.loads(line) for line in sys.stdin), schema)
-
-def run(docs, schema):
-
-    for doc in jsonvalidate(docs, schema):
-        json.dump(doc, sys.stdout)
-        sys.stdout.write("\n")
-
-def jsonvalidate(docs, schema):
+def validate(docs, schema, verbose=False):
     for doc in docs:
         jsonschema.validate(doc, schema)
         yield doc
+
+streamer = mwcli.Streamer(
+    __doc__,
+    __name__,
+    validate,
+    process_args
+)
+
+main = streamer.main
