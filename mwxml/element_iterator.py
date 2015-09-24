@@ -102,7 +102,7 @@ class ElementIterator:
         except ParseError as e:
             raise ParseError("{0}: {1}..."
                              .format(str(e),
-                                     str(f.read(500), 'utf-8', 'replace')))
+                                     f.read(500)))
 
     @classmethod
     def from_string(cls, string):
