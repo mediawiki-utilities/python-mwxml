@@ -14,6 +14,11 @@ setup(
     author='Aaron Halfaker',
     author_email='aaron.halfaker@gmail.com',
     packages=find_packages(),
+    entry_points={
+        'console_scripts': [
+            'mwxml=mwxml.mwxml:main'
+        ],
+    },
     scripts=[],
     url='http://pypi.python.org/pypi/mwxml',
     license=open('LICENSE').read(),
