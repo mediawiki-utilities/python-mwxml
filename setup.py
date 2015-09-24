@@ -10,7 +10,7 @@ def requirements(fname):
 
 setup(
     name='mwxml',
-    version="0.1.1",
+    version="0.2.0",
     author='Aaron Halfaker',
     author_email='aaron.halfaker@gmail.com',
     packages=find_packages(),
