@@ -38,7 +38,7 @@ SAMPLE_XML = """
     </revision>
   </page>
   <page>
-    <title>Foo:Bar</title>
+    <title>Talk:Bar</title>
     <ns>1</ns>
     <id>2</id>
     <redirect title="Computer accessibility" />

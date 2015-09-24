@@ -67,7 +67,7 @@ class Page(mwtypes.Page):
         for sub_element in element:
             tag = sub_element.tag
             if tag == "title":
-                title = sub_element.text
+                page_name = sub_element.text
             elif tag == "ns":
                 namespace = int(sub_element.text)
             elif tag == "id":
@@ -91,21 +91,14 @@ class Page(mwtypes.Page):
         revisions = cls.load_revisions(first_revision, element)
 
         # Normalize title and extract namespace
-        ns_name, title = extract_namespace(title)
+        mapped_namespace, title = extract_namespace(page_name, namespace_map)
+        if namespace is not None and mapped_namespace != namespace:
+            logger.warn("Namespace id conflict detected.  " +
+                        "<title>={0}, ".format(page_name) +
+                        "<namespace>={0}, ".format(namespace) +
+                        "mapped_namespace={0}".format(mapped_namespace))
 
-        # <namespace> is missing in old dumps.  Try to use the namespace map.
-        if namespace is None and namespace_map is not None:
-            if ns_name is None:
-                namespace = 0
-            else:
-                if ns_name in namespace_map:
-                    namespace = namespace_map[ns_name].id
-                else:
-                    logger.warn("Could not lookup namespace {0}"
-                                .format(ns_name))
-
-
-
+        namespace = namespace or mapped_namespace
 
         # Construct class
         return cls(id, title, namespace, redirect=redirect,
@@ -115,9 +108,14 @@ class Page(mwtypes.Page):
 def normalize_title(title):
     return title.replace("_", " ")
 
-def extract_namespace(title):
-    title_parts = title.split(":", 1)
+
+def extract_namespace(page_name, namespace_map):
+    title_parts = page_name.split(":", 1)
     if len(title_parts) == 1:
-        return None, normalize_title(title)
+        return 0, normalize_title(page_name)
     else:
-        return title_parts[0], normalize_title(title_parts[1])
+        ns_name, split_title = title_parts
+        if ns_name in namespace_map:
+            return namespace_map[ns_name].id, normalize_title(split_title)
+        else:
+            return 0, normalize_title(page_name)
