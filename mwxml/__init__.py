@@ -26,4 +26,4 @@ from .iteration import Dump, Page, Revision, SiteInfo, Namespace
 
 __all__ = [map, Dump, Page, Revision, SiteInfo, Namespace]
 
-__version__ = "0.2.0"
+__version__ = "0.2.1"
