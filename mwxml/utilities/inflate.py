@@ -42,10 +42,10 @@ def _single_inflate(flat_json):
     return inflated
 
 
-def inflate(flat_jsons):
+def inflate(flat_jsons, verbose=False):
     for flat_json in flat_jsons:
         inflated = _single_inflate(flat_json)
-        yield rev_json
+        yield inflated
 
 
 streamer = mwcli.Streamer(
