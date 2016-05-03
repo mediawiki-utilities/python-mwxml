@@ -11,6 +11,6 @@ dump_paths = sys.argv[1:]
 for path in dump_paths:
     dump = pywikibot.xmlreader.XmlDump(path, allrevisions=True)
     for entry in dump.parse():
-        ip_edits += entry.ipeditor
+        ip_edits += entry.ipedit
 
 print(ip_edits)
