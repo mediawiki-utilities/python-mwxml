@@ -22,8 +22,9 @@ datatypes are based on those found in http://pythonhosted.org/mwtypes
 """
 from .dump import Dump
 from .page import Page
+from .log_item import LogItem
 from .revision import Revision
 from .site_info import SiteInfo
 from .namespace import Namespace
 
-__all__ = [Dump, Page, Revision, SiteInfo, Namespace]
+__all__ = [Dump, Page, LogItem, Revision, SiteInfo, Namespace]

@@ -28,20 +28,33 @@ class Dump:
     :Example:
         .. code-block:: python
 
-            from mwxml import Dump
+            from mwxml import Dump, Page
 
             # Construct dump file iterator
             dump = Dump.from_file(open("example/dump.xml"))
 
             # Iterate through pages
-            for page in dump:
-
+            for page in dump.pages:
                 # Iterate through a page's revisions
                 for revision in page:
-
                     print(revision.id)
+    :Attributes:
 
+        .. autoattribute:: mwxml.Dump.site_info
+            :annotation: = Information from the <siteinfo> block :
+                           mwxml.SiteInfo
+
+        .. autoattribute:: mwxml.Dump.pages
+            :annotation: = The mwxml.Page that appear in the dump : iterator
+
+        .. autoattribute:: mwxml.Dump.items
+            :annotation: = The mwxml.Page and/or mwxml.LogItem that appear in
+                           the dump : iterator
+
+        .. autoattribute:: mwxml.Dump.log_items
+            :annotation: = The mwxml.LogItem that appear in the dump : iterator
     """
+    __slots__ = ('site_info', 'items', 'pages', 'log_items')
 
     def __init__(self, site_info, items):
 
@@ -53,8 +66,14 @@ class Dump:
 
         # Should be a lazy generator of page info
         self.items = items or range(0)
+        """
+        An iterator of :class:`mwxml.Page` and/or
+        :class:`mwxml.LogItem` elements
+        """
         self.pages = (item for item in items if isinstance(item, Page))
+        "An iterator of :class:`mwxml.Page` elements"
         self.log_items = (item for item in items if isinstance(item, LogItem))
+        "An iterator of :class:`mwxml.LogItem` elements"
 
     def __iter__(self):
         return self.items
