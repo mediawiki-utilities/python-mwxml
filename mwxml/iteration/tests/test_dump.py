@@ -181,6 +181,7 @@ OLD_XML = """
   </page>
 </mediawiki>"""
 
+
 def test_old_dump():
     f = io.StringIO(OLD_XML)
 
@@ -189,3 +190,60 @@ def test_old_dump():
     page = next(dump)
 
     eq_(page.namespace, 1)
+
+
+LOG_XML = """
+<mediawiki xmlns="http://www.mediawiki.org/xml/export-0.8/"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.8/
+                               http://www.mediawiki.org/xml/export-0.8.xsd"
+           version="0.8" xml:lang="en">
+  <siteinfo>
+    <sitename>Wikipedia</sitename>
+    <base>http://en.wikipedia.org/wiki/Main_Page</base>
+    <generator>MediaWiki 1.22wmf2</generator>
+    <case>first-letter</case>
+    <namespaces>
+      <namespace key="0" case="first-letter" />
+      <namespace key="1" case="first-letter">Talk</namespace>
+    </namespaces>
+  </siteinfo>
+  <logitem>
+    <id>1</id>
+    <timestamp>2004-12-23T03:20:32Z</timestamp>
+    <contributor>
+      <username>Slowking Man</username>
+      <id>56299</id>
+    </contributor>
+    <comment>content was: '[[Media:Example.og[http://www.example.com link title][http://www.example.com link title]''Italic text'''''Bold text'''jjhkjhkjhkjhkjhjggghg]]'</comment>
+    <type>delete</type>
+    <action>delete</action>
+    <logtitle>Vivian Blaine</logtitle>
+    <params xml:space="preserve" />
+  </logitem>
+  <logitem>
+    <id>2</id>
+    <timestamp>2004-12-23T03:24:26Z</timestamp>
+    <contributor>
+      <username>Fredrik</username>
+      <id>26675</id>
+    </contributor>
+    <comment>{{GFDL}} {{cc-by-sa-2.0}}</comment>
+    <type>upload</type>
+    <action>upload</action>
+    <logtitle>File:Mini Christmas tree.png</logtitle>
+    <params xml:space="preserve" />
+  </logitem>
+</mediawiki>"""  # noqa
+
+
+def test_log_dump():
+    f = io.StringIO(LOG_XML)
+
+    dump = Dump.from_file(f)
+
+    log_item = next(dump)
+    eq_(log_item.id, 1)
+
+    log_item = next(dump)
+    eq_(log_item.id, 2)

@@ -10,6 +10,9 @@ datatypes are based on those found in http://pythonhosted.org/mwtypes
 .. autoclass:: mwxml.Page
     :inherited-members:
 
+.. autoclass:: mwxml.LogItem
+    :inherited-members:
+
 .. autoclass:: mwxml.Revision
     :inherited-members:
 

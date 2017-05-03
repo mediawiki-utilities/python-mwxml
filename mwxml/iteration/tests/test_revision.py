@@ -57,24 +57,3 @@ def test_revision():
     eq_(revision.deleted.text, True)
     eq_(revision.deleted.comment, True)
     eq_(revision.deleted.user, True)
-
-
-def test_revision_user():
-    XML = """
-    <contributor>
-      <username>Gen0cide</username>
-      <id>92182</id>
-    </contributor>
-    """
-    user = Revision.User.from_element(ElementIterator.from_string(XML))
-    eq_(user.id, 92182)
-    eq_(user.text, "Gen0cide")
-
-    XML = """
-    <contributor>
-      <ip>192.168.0.1</ip>
-    </contributor>
-    """
-    user = Revision.User.from_element(ElementIterator.from_string(XML))
-    eq_(user.id, None)
-    eq_(user.text, "192.168.0.1")

@@ -4,6 +4,7 @@ import mwtypes.files
 
 from ..element_iterator import ElementIterator
 from ..errors import MalformedXML
+from .log_item import LogItem
 from .page import Page
 from .site_info import SiteInfo
 
@@ -42,7 +43,7 @@ class Dump:
 
     """
 
-    def __init__(self, site_info, pages):
+    def __init__(self, site_info, items):
 
         self.site_info = SiteInfo(site_info)
         """
@@ -51,41 +52,48 @@ class Dump:
         """
 
         # Should be a lazy generator of page info
-        self.pages = pages or range(0)
+        self.items = items or range(0)
+        self.pages = (item for item in items if isinstance(item, Page))
+        self.log_items = (item for item in items if isinstance(item, LogItem))
 
     def __iter__(self):
-        return self.pages
+        return self.items
 
     def __next__(self):
-        return next(self.pages)
+        return next(self.items)
 
     @classmethod
-    def load_pages(cls, first_page, element, namespace_map):
-        if first_page is not None:
-            yield Page.from_element(first_page, namespace_map)
+    def load_items(cls, first_item_element, element, namespace_map):
+        if first_item_element is not None:
+            yield cls.process_item(first_item_element, namespace_map)
+            # Ensure that we completely current tag block
+            first_item_element.clear()
 
-        for sub_element in element:
-            tag = sub_element.tag
+        for item_element in element:
+            yield cls.process_item(item_element, namespace_map)
 
-            if tag == "page":
-                yield Page.from_element(sub_element, namespace_map)
-            else:
-                assert MalformedXML("Expected to see <page>.  " +
-                                    "Instead saw <{0}>".format(tag))
+    @classmethod
+    def process_item(cls, item_element, namespace_map):
+        if item_element.tag == "page":
+            return Page.from_element(item_element, namespace_map)
+        elif item_element.tag == "logitem":
+            return LogItem.from_element(item_element, namespace_map)
+        else:
+            raise MalformedXML("Expected to see <page> or <logitem>.  " +
+                               "Instead saw <{0}>".format(item_element.tag))
 
     @classmethod
     def from_element(cls, element):
 
         site_info = None
-        first_page = None
+        first_item_element = None
 
         # Consume <siteinfo>
         for sub_element in element:
-            tag = sub_element.tag
-            if tag == "siteinfo":
+            if sub_element.tag == "siteinfo":
                 site_info = SiteInfo.from_element(sub_element)
-            elif tag == "page":
-                first_page = sub_element
+            elif sub_element.tag in ("page", "logitem"):
+                first_item_element = sub_element
                 break
             # Assuming that the first <page> seen marks the end of dump
             # metadata.  I'm not too keen on this assumption, so I'm leaving
@@ -100,10 +108,10 @@ class Dump:
             for namespace in site_info.namespaces:
                 namespace_map[namespace.name] = namespace
 
-        # Consume all <page>
-        pages = cls.load_pages(first_page, element, namespace_map)
+        # Consume all <page> and <logitem>
+        items = cls.load_items(first_item_element, element, namespace_map)
 
-        return cls(site_info, pages)
+        return cls(site_info, items)
 
     @classmethod
     def from_file(cls, f):

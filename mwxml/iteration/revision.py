@@ -1,28 +1,7 @@
 import mwtypes
 
 from ..errors import MalformedXML
-from .util import consume_tags
-
-
-class User(mwtypes.Revision.User):
-    """
-    User `id` and `text`.  See :class:`mwtypes.Revision.User` for a
-    description of fields.
-    """
-    TAG_MAP = {
-        'id': lambda e: int(e.text),
-        'username': lambda e: str(e.text),
-        'ip': lambda e: str(e.text)
-    }
-
-    @classmethod
-    def from_element(cls, element):
-        values = consume_tags(cls.TAG_MAP, element)
-
-        return cls(
-            values.get('id'),
-            values.get('username', values.get('ip'))
-        )
+from .user import User
 
 
 class Revision(mwtypes.Revision):
@@ -30,8 +9,6 @@ class Revision(mwtypes.Revision):
     Revision metadata and text.  See :class:`mwtypes.Revision` for a
     description of fields.
     """
-
-    User = User  # Adds from_element()
 
     @classmethod
     def from_element(cls, element):
@@ -60,7 +37,7 @@ class Revision(mwtypes.Revision):
             elif tag == "contributor":
                 user_deleted = sub_element.attr('deleted') is not None
                 if not user_deleted:
-                    user = cls.User.from_element(sub_element)
+                    user = User.from_element(sub_element)
             elif tag == "minor":
                 minor = True
             elif tag == "sha1":
