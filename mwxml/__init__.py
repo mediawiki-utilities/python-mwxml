@@ -27,7 +27,9 @@ XML parsing.
 """
 from .map import map
 from .iteration import Dump, Page, LogItem, Revision, SiteInfo, Namespace
+from .about import (__name__, __version__, __author__, __author_email__,
+                    __description__, __license__, __url__)
 
-__all__ = [map, Dump, Page, LogItem, Revision, SiteInfo, Namespace]
-
-__version__ = "0.2.2"
+__all__ = [map, Dump, Page, LogItem, Revision, SiteInfo, Namespace,
+           __name__, __version__, __author__, __author_email__,
+           __description__, __license__, __url__]
