@@ -42,3 +42,23 @@ def test_log_item():
     eq_(log_item.deleted.user, False)
     eq_(log_item.deleted.comment, False)
     eq_(log_item.deleted.restricted, None)
+
+    NULL_TITLE_XML = """
+    <logitem>
+        <id>6</id>
+        <timestamp>2004-12-23T03:34:26Z</timestamp>
+        <contributor>
+            <username>Brockert</username>
+            <id>50095</id>
+        </contributor>
+        <comment>content was: '#redirect [[Template:UserBrockert]]', an old experiment of mine, now being moved around by bots</comment>
+        <type>delete</type>
+        <action>delete</action>
+        <logtitle />
+        <params xml:space="preserve" />
+    </logitem>
+    """  # noqa
+    log_item = LogItem.from_element(
+        ElementIterator.from_string(NULL_TITLE_XML))
+    eq_(log_item.page.namespace, None)
+    eq_(log_item.page.title, None)

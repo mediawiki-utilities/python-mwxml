@@ -51,7 +51,10 @@ class LogItem(mwtypes.LogItem):
                 if not user_deleted:
                     user = User.from_element(sub_element)
             elif tag == "logtitle":
-                if namespace_map is not None:
+                if sub_element.text is None:
+                    namespace = None
+                    title = None
+                elif namespace_map is not None:
                     namespace, title = extract_namespace(
                         sub_element.text, namespace_map)
                 else:
