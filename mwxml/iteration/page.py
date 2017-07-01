@@ -79,6 +79,9 @@ class Page(mwtypes.Page):
             elif tag == "revision":
                 first_revision = sub_element
                 break
+            elif tag == "discussionthreadinginfo":
+                logger.warning(
+                    "Encountered <discussionthreadinginfo> and skipping it...")
             # Assuming that the first revision seen marks the end of page
             # metadata.  I'm not too keen on this assumption, so I'm leaving
             # this long comment to warn whoever ends up maintaining this.

@@ -56,6 +56,7 @@ def test_page():
     revision = next(page)
     eq_(revision.id, 862220)
 
+
 def test_old_page():
     XML = """
     <page>
@@ -80,3 +81,44 @@ def test_old_page():
     page = Page.from_element(ElementIterator.from_string(XML),
                              {"Talk": Namespace(1, "Talk")})
     eq_(page.namespace, 1)
+
+
+def test_page_with_discussion():
+    XML = """
+    <page>
+        <title>Talk:AccessibleComputing</title>
+        <id>10</id>
+        <redirect title="Computer accessibility" />
+        <discussionthreadinginfo>
+          <ThreadSubject>Foo</ThreadSubject>
+          <ThreadParent>1</ThreadParent>
+          <ThreadAncestor>2</ThreadAncestor>
+          <ThreadPage>Bar</ThreadPage>
+          <ThreadPage>3</ThreadPage>
+          <ThreadAuthor>Baz</ThreadAuthor>
+          <ThreadEditStatus>Herp</ThreadEditStatus>
+          <ThreadType>Derp</ThreadType>
+        </discussionthreadinginfo>
+        <revision>
+          <id>862220</id>
+          <parentid>233192</parentid>
+          <timestamp>2002-02-25T15:43:11Z</timestamp>
+          <contributor>
+            <username>Conversion script</username>
+            <id>0</id>
+          </contributor>
+          <minor />
+          <comment>Automated conversion</comment>
+          <model>wikitext</model>
+          <format>text/x-wiki</format>
+          <text xml:space="preserve">Text of rev 862220</text>
+          <sha1>i8pwco22fwt12yp12x29wc065ded2bh</sha1>
+        </revision>
+    </page>
+    """
+    page = Page.from_element(ElementIterator.from_string(XML),
+                             {"Talk": Namespace(1, "Talk")})
+    eq_(page.namespace, 1)
+
+    revision = next(page)
+    eq_(revision.id, 862220)
