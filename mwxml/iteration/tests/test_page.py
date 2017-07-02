@@ -87,9 +87,10 @@ def test_page_with_discussion():
     XML = """
     <page>
         <title>Talk:AccessibleComputing</title>
+        <ns>90</ns>
         <id>10</id>
         <redirect title="Computer accessibility" />
-        <discussionthreadinginfo>
+        <DiscussionThreading>
           <ThreadSubject>Foo</ThreadSubject>
           <ThreadParent>1</ThreadParent>
           <ThreadAncestor>2</ThreadAncestor>
@@ -98,7 +99,7 @@ def test_page_with_discussion():
           <ThreadAuthor>Baz</ThreadAuthor>
           <ThreadEditStatus>Herp</ThreadEditStatus>
           <ThreadType>Derp</ThreadType>
-        </discussionthreadinginfo>
+        </DiscussionThreading>
         <revision>
           <id>862220</id>
           <parentid>233192</parentid>
