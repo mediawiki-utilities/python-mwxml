@@ -121,9 +121,8 @@ class Dump:
                 raise MalformedXML("Unexpected tag found when processing " +
                                    "a <mediawiki>: '{0}'".format(tag))
 
-        namespace_map = None
+        namespace_map = {}
         if site_info.namespaces is not None:
-            namespace_map = {}
             for namespace in site_info.namespaces:
                 namespace_map[namespace.name] = namespace
 
