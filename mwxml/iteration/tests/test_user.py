@@ -23,3 +23,13 @@ def test_user():
     user = User.from_element(ElementIterator.from_string(XML))
     eq_(user.id, None)
     eq_(user.text, "192.168.0.1")
+
+    XML = """
+    <contributor>
+      <username></username>
+      <id></id>
+    </contributor>
+    """
+    user = User.from_element(ElementIterator.from_string(XML))
+    eq_(user.id, 0)
+    eq_(user.text, "None")
