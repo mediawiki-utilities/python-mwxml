@@ -8,8 +8,9 @@ class User(mwtypes.User):
     User `id` and `text`.  See :class:`mwtypes.Revision.User` for a
     description of fields.
     """
+
     TAG_MAP = {
-        'id': lambda e: int(e.text),
+        'id': lambda e: int(e.text) if e.text is not None else 0,
         'username': lambda e: str(e.text),
         'ip': lambda e: str(e.text)
     }
