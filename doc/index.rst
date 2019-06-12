@@ -35,7 +35,7 @@ Authors
 -------
 * Aaron Halfaker -- https://github.com/halfak
 
-Pull requests welcome @ https://github.com/halfak/python-mwxml
+Pull requests welcome @ https://github.com/mediawiki-utilities/python-mwxml
 
 
 Indices and tables
