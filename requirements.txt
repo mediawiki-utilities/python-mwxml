@@ -1,4 +1,4 @@
-mwtypes >= 0.3.0
+mwtypes >= 0.4.0
 mwcli >= 0.0.2
 para >= 0.0.1
 jsonschema >= 2.5.1

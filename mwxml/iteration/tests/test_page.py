@@ -87,7 +87,7 @@ def test_page_with_discussion():
     XML = """
     <page>
         <title>Talk:AccessibleComputing</title>
-        <ns>90</ns>
+        <ns>1</ns>
         <id>10</id>
         <redirect title="Computer accessibility" />
         <DiscussionThreading>
