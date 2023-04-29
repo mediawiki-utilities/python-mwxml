@@ -1,5 +1,5 @@
 __name__ = "mwxml"
-__version__ = "0.3.3"
+__version__ = "0.3.4"
 __author__ = "Aaron Halfaker"
 __author_email__ = "aaron.halfaker@gmail.com"
 __description__ = "A set of utilities for processing MediaWiki XML dump data."
