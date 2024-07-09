@@ -23,6 +23,7 @@ class Revision(mwtypes.Revision):
         user = None
         user_deleted = False
         minor = False
+        origin = None
         comment = None
         comment_deleted = False
         text = None
@@ -49,6 +50,8 @@ class Revision(mwtypes.Revision):
                     user = User.from_element(sub_element)
             elif tag == "minor":
                 minor = True
+            elif tag == "origin":
+                origin = sub_element.text
             elif tag == "sha1":
                 sha1 = sub_element.text
             elif tag == "parentid":
