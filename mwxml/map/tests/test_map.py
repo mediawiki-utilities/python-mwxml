@@ -1,5 +1,6 @@
 import io
 
+import pytest
 
 from ..map import map
 
@@ -69,18 +70,18 @@ def test_map():
     assert pages == 2
 
 
-@raises(TypeError)
 def test_map_error():
-    f = io.StringIO(SAMPLE_XML)
+    with pytest.raises(TypeError):
+        f = io.StringIO(SAMPLE_XML)
 
-    def process_dump(dump, path):
-        for page in dump:
+        def process_dump(dump, path):
+            for page in dump:
 
-            if page.id == 2:
-                raise TypeError("Fake error")
+                if page.id == 2:
+                    raise TypeError("Fake error")
 
-    for doc in map([f], process_dump):
-        assert 'page_id' in doc
+        for doc in map([f], process_dump):
+            assert 'page_id' in doc
 
 
 def test_map_error_handler():
@@ -114,75 +115,75 @@ def test_map_error_handler():
     assert pages == 2
 
 
-@raises(ValueError)
 def test_complex_error_handler():
-    f_clean = io.StringIO("""
-        <mediawiki xmlns="http://www.mediawiki.org/xml/export-0.8/"
-                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                   xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.8/
-                   http://www.mediawiki.org/xml/export-0.8.xsd"
-                   version="0.8" xml:lang="en">
-          <siteinfo>
-            <sitename>Wikipedia</sitename>
-            <base>http://en.wikipedia.org/wiki/Main_Page</base>
-            <generator>MediaWiki 1.22wmf2</generator>
-            <case>first-letter</case>
-            <namespaces>
-              <namespace key="0" case="first-letter" />
-              <namespace key="1" case="first-letter">Talk</namespace>
-            </namespaces>
-          </siteinfo>
-          <page>
-            <title>Foo</title>
-            <ns>0</ns>
-            <id>1</id>
-            <revision>
-              <id>1</id>
-              <timestamp>2004-08-09T09:04:08Z</timestamp>
-            </revision>
-            <revision>
-              <id>2</id>
-              <timestamp>2004-08-10T09:04:08Z</timestamp>
-            </revision>
-          </page>
-        </mediawiki>
-    """)
-    f_messy = io.StringIO("""
-        <mediawiki xmlns="http://www.mediawiki.org/xml/export-0.8/"
-                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                   xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.8/
-                   http://www.mediawiki.org/xml/export-0.8.xsd"
-                   version="0.8" xml:lang="en">
-          <siteinfo>
-            <sitename>Wikipedia</sitename>
-            <base>http://en.wikipedia.org/wiki/Main_Page</base>
-            <generator>MediaWiki 1.22wmf2</generator>
-            <case>first-letter</case>
-            <namespaces>
-              <namespace key="0" case="first-letter" />
-              <namespace key="1" case="first-letter">Talk</namespace>
-            </namespaces>
-          </siteinfo>
-          <page>
-            <title>Bar</title>
-            <ns>0</ns>
-            <id>2</id>
-            <revision>
-              <id>3</id>
-              <timestamp>MESSY</timestamp>
-            </revision>
-            <revision>
-              <id>4</id>
-              <timestamp>2004-08-10T09:04:08Z</timestamp>
-            </revision>
-          </page>
-        </mediawiki>
-    """)
-
-    def process_dump(dump, path):
-        for page in dump:
-            for revision in page:
-                yield revision
-
-    for rev in map(process_dump, [f_messy, f_clean], threads=1):
-        print(rev.to_json())
+    with pytest.raises(ValueError):
+        f_clean = io.StringIO("""
+            <mediawiki xmlns="http://www.mediawiki.org/xml/export-0.8/"
+                       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                       xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.8/
+                       http://www.mediawiki.org/xml/export-0.8.xsd"
+                       version="0.8" xml:lang="en">
+              <siteinfo>
+                <sitename>Wikipedia</sitename>
+                <base>http://en.wikipedia.org/wiki/Main_Page</base>
+                <generator>MediaWiki 1.22wmf2</generator>
+                <case>first-letter</case>
+                <namespaces>
+                  <namespace key="0" case="first-letter" />
+                  <namespace key="1" case="first-letter">Talk</namespace>
+                </namespaces>
+              </siteinfo>
+              <page>
+                <title>Foo</title>
+                <ns>0</ns>
+                <id>1</id>
+                <revision>
+                  <id>1</id>
+                  <timestamp>2004-08-09T09:04:08Z</timestamp>
+                </revision>
+                <revision>
+                  <id>2</id>
+                  <timestamp>2004-08-10T09:04:08Z</timestamp>
+                </revision>
+              </page>
+            </mediawiki>
+        """)
+        f_messy = io.StringIO("""
+            <mediawiki xmlns="http://www.mediawiki.org/xml/export-0.8/"
+                       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                       xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.8/
+                       http://www.mediawiki.org/xml/export-0.8.xsd"
+                       version="0.8" xml:lang="en">
+              <siteinfo>
+                <sitename>Wikipedia</sitename>
+                <base>http://en.wikipedia.org/wiki/Main_Page</base>
+                <generator>MediaWiki 1.22wmf2</generator>
+                <case>first-letter</case>
+                <namespaces>
+                  <namespace key="0" case="first-letter" />
+                  <namespace key="1" case="first-letter">Talk</namespace>
+                </namespaces>
+              </siteinfo>
+              <page>
+                <title>Bar</title>
+                <ns>0</ns>
+                <id>2</id>
+                <revision>
+                  <id>3</id>
+                  <timestamp>MESSY</timestamp>
+                </revision>
+                <revision>
+                  <id>4</id>
+                  <timestamp>2004-08-10T09:04:08Z</timestamp>
+                </revision>
+              </page>
+            </mediawiki>
+        """)
+    
+        def process_dump(dump, path):
+            for page in dump:
+                for revision in page:
+                    yield revision
+    
+        for rev in map(process_dump, [f_messy, f_clean], threads=1):
+            print(rev.to_json())
