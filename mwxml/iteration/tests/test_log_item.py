@@ -1,6 +1,4 @@
 from mwtypes import Timestamp
-from nose.tools import eq_
-
 from ...element_iterator import ElementIterator
 from ..log_item import LogItem
 from ..namespace import Namespace
@@ -26,22 +24,22 @@ def test_log_item():
         "Template": Namespace(10, "Template")}
     log_item = LogItem.from_element(
         ElementIterator.from_string(XML), namespace_map)
-    eq_(log_item.id, 6)
-    eq_(log_item.timestamp, Timestamp("2004-12-23T03:34:26Z"))
-    eq_(log_item.comment,
+    assert log_item.id == 6
+    assert log_item.timestamp == Timestamp("2004-12-23T03:34:26Z")
+    assert (log_item.comment ==
         "content was: '#redirect [[Template:UserBrockert]]', an old " +
         "experiment of mine, now being moved around by bots")
-    eq_(log_item.user.id, 50095)
-    eq_(log_item.user.text, "Brockert")
-    eq_(log_item.page.namespace, 10)
-    eq_(log_item.page.title, "UserBrockert")
-    eq_(log_item.type, "delete")
-    eq_(log_item.action, "delete")
-    eq_(log_item.params, None)
-    eq_(log_item.deleted.action, None)
-    eq_(log_item.deleted.user, False)
-    eq_(log_item.deleted.comment, False)
-    eq_(log_item.deleted.restricted, None)
+    assert log_item.user.id == 50095
+    assert log_item.user.text == "Brockert"
+    assert log_item.page.namespace == 10
+    assert log_item.page.title == "UserBrockert"
+    assert log_item.type == "delete"
+    assert log_item.action == "delete"
+    assert log_item.params == None
+    assert log_item.deleted.action == None
+    assert log_item.deleted.user == False
+    assert log_item.deleted.comment == False
+    assert log_item.deleted.restricted == None
 
     NULL_TITLE_XML = """
     <logitem>
@@ -60,5 +58,5 @@ def test_log_item():
     """  # noqa
     log_item = LogItem.from_element(
         ElementIterator.from_string(NULL_TITLE_XML))
-    eq_(log_item.page.namespace, None)
-    eq_(log_item.page.title, None)
+    assert log_item.page.namespace == None
+    assert log_item.page.title == None

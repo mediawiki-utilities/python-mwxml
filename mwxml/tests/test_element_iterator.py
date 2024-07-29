@@ -1,7 +1,5 @@
 import io
 
-from nose.tools import eq_
-
 from ..element_iterator import ElementIterator, EventPointer
 
 
@@ -18,61 +16,61 @@ TEST_XML = """
 def test_pointer():
     pointer = EventPointer.from_file(io.StringIO(TEST_XML))
 
-    eq_(pointer.tag_stack, [])
-    eq_(pointer.depth(), 0)
+    assert pointer.tag_stack == []
+    assert pointer.depth() == 0
 
     event, element = next(pointer)
-    eq_(pointer.tag_stack, ["foo"])
-    eq_(pointer.depth(), 1)
-    eq_(element.tag, "foo")
-    eq_(event, "start")
+    assert pointer.tag_stack == ["foo"]
+    assert pointer.depth() == 1
+    assert element.tag == "foo"
+    assert event == "start"
 
     event, element = next(pointer)
-    eq_(pointer.tag_stack, ["foo", "bar"])
-    eq_(pointer.depth(), 2)
-    eq_(element.tag, "bar")
-    eq_(event, "start")
+    assert pointer.tag_stack == ["foo", "bar"]
+    assert pointer.depth() == 2
+    assert element.tag == "bar"
+    assert event == "start"
 
     event, element = next(pointer)
-    eq_(pointer.tag_stack, ["foo", "bar", "herp"])
-    eq_(pointer.depth(), 3)
-    eq_(element.tag, "herp")
-    eq_(event, "start")
+    assert pointer.tag_stack == ["foo", "bar", "herp"]
+    assert pointer.depth() == 3
+    assert element.tag == "herp"
+    assert event == "start"
 
     event, element = next(pointer)
-    eq_(pointer.tag_stack, ["foo", "bar"])
-    eq_(pointer.depth(), 2)
-    eq_(element.tag, "herp")
-    eq_(event, "end")
+    assert pointer.tag_stack == ["foo", "bar"]
+    assert pointer.depth() == 2
+    assert element.tag == "herp"
+    assert event == "end"
 
     event, element = next(pointer)
-    eq_(pointer.tag_stack, ["foo"])
-    eq_(pointer.depth(), 1)
-    eq_(element.tag, "bar")
-    eq_(event, "end")
+    assert pointer.tag_stack == ["foo"]
+    assert pointer.depth() == 1
+    assert element.tag == "bar"
+    assert event == "end"
 
     event, element = next(pointer)
-    eq_(pointer.tag_stack, ["foo", "derp"])
-    eq_(pointer.depth(), 2)
-    eq_(element.tag, "derp")
-    eq_(event, "start")
+    assert pointer.tag_stack == ["foo", "derp"]
+    assert pointer.depth() == 2
+    assert element.tag == "derp"
+    assert event == "start"
 
     event, element = next(pointer)
-    eq_(pointer.tag_stack, ["foo"])
-    eq_(pointer.depth(), 1)
-    eq_(element.tag, "derp")
-    eq_(event, "end")
+    assert pointer.tag_stack == ["foo"]
+    assert pointer.depth() == 1
+    assert element.tag == "derp"
+    assert event == "end"
 
     event, element = next(pointer)
-    eq_(pointer.tag_stack, [])
-    eq_(pointer.depth(), 0)
-    eq_(element.tag, "foo")
-    eq_(event, "end")
+    assert pointer.tag_stack == []
+    assert pointer.depth() == 0
+    assert element.tag == "foo"
+    assert event == "end"
 
     try:
         event, element = next(pointer)
     except StopIteration:
-        return True
+        return None
 
     assert False, "Iteration did not stop as expected."
 
@@ -83,15 +81,15 @@ def test_iterator():
 
     bar_element = next(foo_iterator)
     bar_iterator = iter(bar_element)
-    eq_(bar_element.tag, "bar")
+    assert bar_element.tag == "bar"
 
     herp_element = next(bar_iterator)
-    eq_(herp_element.tag, "herp")
-    eq_(herp_element.text, "content")
+    assert herp_element.tag == "herp"
+    assert herp_element.text == "content"
 
     derp_element = next(foo_iterator)
-    eq_(derp_element.tag, "derp")
-    eq_(derp_element.attr("foo"), "bar")
+    assert derp_element.tag == "derp"
+    assert derp_element.attr("foo") == "bar"
 
 
 def test_skipping_iterator():
@@ -101,5 +99,5 @@ def test_skipping_iterator():
     next(foo_iterator)
 
     derp_element = next(foo_iterator)
-    eq_(derp_element.tag, "derp")
-    eq_(derp_element.attr("foo"), "bar")
+    assert derp_element.tag == "derp"
+    assert derp_element.attr("foo") == "bar"

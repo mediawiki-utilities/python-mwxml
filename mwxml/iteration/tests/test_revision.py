@@ -1,6 +1,4 @@
 import mwtypes
-from nose.tools import eq_
-
 from ...element_iterator import ElementIterator
 from ..revision import Revision
 
@@ -23,19 +21,19 @@ def test_old_revision():
     </revision>
     """
     revision = Revision.from_element(ElementIterator.from_string(XML))
-    eq_(revision.id, 233192)
-    eq_(revision.timestamp, mwtypes.Timestamp("2001-01-21T02:12:21Z"))
-    eq_(revision.user.id, 99)
-    eq_(revision.user.text, "RoseParks")
-    eq_(revision.comment, "*")
-    eq_(revision.minor, True)
-    eq_(revision.model, "wikitext")
-    eq_(revision.format, "text/x-wiki")
-    eq_(revision.text, "Text of rev 233192")
-    eq_(revision.sha1, "8kul9tlwjm9oxgvqzbwuegt9b2830vw")
-    eq_(revision.deleted.text, False)
-    eq_(revision.deleted.comment, False)
-    eq_(revision.deleted.user, False)
+    assert revision.id == 233192
+    assert revision.timestamp == mwtypes.Timestamp("2001-01-21T02:12:21Z")
+    assert revision.user.id == 99
+    assert revision.user.text == "RoseParks"
+    assert revision.comment == "*"
+    assert revision.minor == True
+    assert revision.model == "wikitext"
+    assert revision.format == "text/x-wiki"
+    assert revision.text == "Text of rev 233192"
+    assert revision.sha1 == "8kul9tlwjm9oxgvqzbwuegt9b2830vw"
+    assert revision.deleted.text == False
+    assert revision.deleted.comment == False
+    assert revision.deleted.user == False
 
     XML = """
     <revision>
@@ -51,12 +49,12 @@ def test_old_revision():
     </revision>
     """
     revision = Revision.from_element(ElementIterator.from_string(XML))
-    eq_(revision.user, None)
-    eq_(revision.comment, None)
-    eq_(revision.text, None)
-    eq_(revision.deleted.text, True)
-    eq_(revision.deleted.comment, True)
-    eq_(revision.deleted.user, True)
+    assert revision.user == None
+    assert revision.comment == None
+    assert revision.text == None
+    assert revision.deleted.text == True
+    assert revision.deleted.comment == True
+    assert revision.deleted.user == True
 
 
 def test_new_revision():
@@ -85,30 +83,30 @@ def test_new_revision():
     </revision>
     """  # noqa
     revision = Revision.from_element(ElementIterator.from_string(XML))
-    eq_(revision.id, 233192)
-    eq_(revision.timestamp, mwtypes.Timestamp("2001-01-21T02:12:21Z"))
-    eq_(revision.user.id, 99)
-    eq_(revision.user.text, "RoseParks")
-    eq_(revision.comment, "*")
-    eq_(revision.minor, True)
-    eq_(revision.model, "wikitext")
-    eq_(revision.format, "text/x-wiki")
-    eq_(revision.text, "Text of rev 233192")
-    eq_(revision.sha1, "8kul9tlwjm9oxgvqzbwuegt9b2830vw")
-    eq_(revision.deleted.text, True)
-    eq_(revision.deleted.comment, False)
-    eq_(revision.deleted.user, False)
-    eq_(revision.slots.sha1, "93284629347293")
-    eq_(revision.slots['main'].sha1,
+    assert revision.id == 233192
+    assert revision.timestamp == mwtypes.Timestamp("2001-01-21T02:12:21Z")
+    assert revision.user.id == 99
+    assert revision.user.text == "RoseParks"
+    assert revision.comment == "*"
+    assert revision.minor == True
+    assert revision.model == "wikitext"
+    assert revision.format == "text/x-wiki"
+    assert revision.text == "Text of rev 233192"
+    assert revision.sha1 == "8kul9tlwjm9oxgvqzbwuegt9b2830vw"
+    assert revision.deleted.text == True
+    assert revision.deleted.comment == False
+    assert revision.deleted.user == False
+    assert revision.slots.sha1 == "93284629347293"
+    assert (revision.slots['main'].sha1 ==
         "8kul9tlwjm9oxgvqzbwuegt9b2830vw")
-    eq_(revision.slots['main'].text, "Text of rev 233192")
-    eq_(revision.slots['main'].format, "text/x-wiki")
-    eq_(revision.slots['label_data'].role, "label_data")
-    eq_(revision.slots['label_data'].origin, 123)
-    eq_(revision.slots['label_data'].model, "JadeEntity")
-    eq_(revision.slots['label_data'].format, "text/json")
-    eq_(revision.slots['label_data'].id, "1234")
-    eq_(revision.slots['label_data'].deleted, True)
-    eq_(revision.slots['label_data'].location, "file://dev/null")
-    eq_(revision.slots['label_data'].bytes, 234)
-    eq_(revision.slots['label_data'].sha1, "ahgsvdjasvbdj3723")
+    assert revision.slots['main'].text == "Text of rev 233192"
+    assert revision.slots['main'].format == "text/x-wiki"
+    assert revision.slots['label_data'].role == "label_data"
+    assert revision.slots['label_data'].origin == 123
+    assert revision.slots['label_data'].model == "JadeEntity"
+    assert revision.slots['label_data'].format == "text/json"
+    assert revision.slots['label_data'].id == "1234"
+    assert revision.slots['label_data'].deleted == True
+    assert revision.slots['label_data'].location == "file://dev/null"
+    assert revision.slots['label_data'].bytes == 234
+    assert revision.slots['label_data'].sha1 == "ahgsvdjasvbdj3723"

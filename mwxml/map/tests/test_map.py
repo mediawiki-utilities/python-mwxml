@@ -1,6 +1,5 @@
 import io
 
-from nose.tools import eq_, raises
 
 from ..map import map
 
@@ -59,15 +58,15 @@ def test_map():
         page_id = doc['page_id']
         revisions = doc['revisions']
         if page_id == 1:
-            eq_(revisions, 2)
+            assert revisions == 2
         elif page_id == 2:
-            eq_(revisions, 1)
+            assert revisions == 1
         else:
             assert False
 
         pages += 1
 
-    eq_(pages, 2)
+    assert pages == 2
 
 
 @raises(TypeError)
@@ -104,15 +103,15 @@ def test_map_error_handler():
         page_id = doc['page_id']
         revisions = doc['revisions']
         if page_id == 1:
-            eq_(revisions, 2)
+            assert revisions == 2
         elif page_id == 2:
-            eq_(revisions, 1)
+            assert revisions == 1
         else:
             assert False
 
         pages += 1
 
-    eq_(pages, 2)
+    assert pages == 2
 
 
 @raises(ValueError)

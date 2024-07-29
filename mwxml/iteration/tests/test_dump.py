@@ -1,8 +1,6 @@
 import io
 
 import mwtypes
-from nose.tools import assert_is_instance, eq_
-
 from ..dump import Dump
 from ..page import Page
 from ..revision import Revision
@@ -59,40 +57,40 @@ def test_complete():
     f = io.StringIO(SAMPLE_XML)
 
     dump = Dump.from_file(f)
-    eq_([0, 1], list(ns.id for ns in dump.site_info.namespaces))
+    assert [0, 1] == list(ns.id for ns in dump.site_info.namespaces)
 
     page = next(dump)
-    eq_(page.title, "Foo")
-    eq_(page.namespace, 0)
-    eq_(page.id, 1)
-    eq_(page.redirect, None)
-    eq_(page.restrictions, [])
+    assert page.title == "Foo"
+    assert page.namespace == 0
+    assert page.id == 1
+    assert page.redirect == None
+    assert page.restrictions == []
 
     revision = next(page)
-    eq_(revision.id, 1)
-    eq_(revision.timestamp, mwtypes.Timestamp("2004-08-09T09:04:08Z"))
+    assert revision.id == 1
+    assert revision.timestamp == mwtypes.Timestamp("2004-08-09T09:04:08Z")
 
     revision = next(page)
-    eq_(revision.id, 2)
-    eq_(revision.timestamp, mwtypes.Timestamp("2004-08-10T09:04:08Z"))
+    assert revision.id == 2
+    assert revision.timestamp == mwtypes.Timestamp("2004-08-10T09:04:08Z")
 
     page = next(dump)
-    assert_is_instance(page, Page)
-    eq_(page.title, "Bar")
-    eq_(page.namespace, 1)
-    eq_(page.id, 2)
-    eq_(page.redirect, "Computer accessibility")
-    eq_(page.restrictions, ["edit=sysop:move=sysop"])
+    assert isinstance(page, Page)
+    assert page.title == "Bar"
+    assert page.namespace == 1
+    assert page.id == 2
+    assert page.redirect == "Computer accessibility"
+    assert page.restrictions == ["edit=sysop:move=sysop"]
 
     revision = next(page)
-    assert_is_instance(revision, Revision)
-    eq_(revision.id, 3)
-    eq_(revision.timestamp, mwtypes.Timestamp("2004-08-11T09:04:08Z"))
+    assert isinstance(revision, Revision)
+    assert revision.id == 3
+    assert revision.timestamp == mwtypes.Timestamp("2004-08-11T09:04:08Z")
 
     revision = next(page)
-    assert_is_instance(revision, Revision)
-    eq_(revision.id, 4)
-    eq_(revision.timestamp, mwtypes.Timestamp("2004-08-12T09:04:08Z"))
+    assert isinstance(revision, Revision)
+    assert revision.id == 4
+    assert revision.timestamp == mwtypes.Timestamp("2004-08-12T09:04:08Z")
 
 
 def test_skipping():
@@ -101,18 +99,18 @@ def test_skipping():
     dump = Dump.from_file(f)
 
     page = next(dump)
-    eq_(page.title, "Foo")
-    eq_(page.namespace, 0)
-    eq_(page.id, 1)
+    assert page.title == "Foo"
+    assert page.namespace == 0
+    assert page.id == 1
 
     page = next(dump)
-    eq_(page.title, "Bar")
-    eq_(page.namespace, 1)
-    eq_(page.id, 2)
+    assert page.title == "Bar"
+    assert page.namespace == 1
+    assert page.id == 2
 
     revision = next(page)
-    eq_(revision.id, 3)
-    eq_(revision.timestamp, mwtypes.Timestamp("2004-08-11T09:04:08Z"))
+    assert revision.id == 3
+    assert revision.timestamp == mwtypes.Timestamp("2004-08-11T09:04:08Z")
 
 
 def test_from_page_xml():
@@ -135,20 +133,20 @@ def test_from_page_xml():
     dump = Dump.from_page_xml(io.StringIO(page_xml))
 
     # You have a `namespaces`, but it's empty.
-    eq_(dump.site_info.namespaces, None)
+    assert dump.site_info.namespaces == None
 
     page = next(dump)
-    eq_(page.title, "Foo")
-    eq_(page.namespace, 0)
-    eq_(page.id, 1)
+    assert page.title == "Foo"
+    assert page.namespace == 0
+    assert page.id == 1
 
     revision = next(page)
-    eq_(revision.id, 1)
-    eq_(revision.timestamp, mwtypes.Timestamp("2004-08-09T09:04:08Z"))
+    assert revision.id == 1
+    assert revision.timestamp == mwtypes.Timestamp("2004-08-09T09:04:08Z")
 
     revision = next(page)
-    eq_(revision.id, 2)
-    eq_(revision.timestamp, mwtypes.Timestamp("2004-08-10T09:04:08Z"))
+    assert revision.id == 2
+    assert revision.timestamp == mwtypes.Timestamp("2004-08-10T09:04:08Z")
 
 
 OLD_XML = """
@@ -189,7 +187,7 @@ def test_old_dump():
 
     page = next(dump)
 
-    eq_(page.namespace, 1)
+    assert page.namespace == 1
 
 
 LOG_XML = """
@@ -243,7 +241,7 @@ def test_log_dump():
     dump = Dump.from_file(f)
 
     log_item = next(dump)
-    eq_(log_item.id, 1)
+    assert log_item.id == 1
 
     log_item = next(dump)
-    eq_(log_item.id, 2)
+    assert log_item.id == 2

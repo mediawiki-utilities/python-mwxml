@@ -1,5 +1,3 @@
-from nose.tools import eq_
-
 from ...element_iterator import ElementIterator
 from ..namespace import Namespace
 from ..page import Page
@@ -43,18 +41,18 @@ def test_page():
     </page>
     """
     page = Page.from_element(ElementIterator.from_string(XML))
-    eq_(page.id, 10)
-    eq_(page.title, "AccessibleComputing")
-    eq_(page.namespace, 0)
-    eq_(page.redirect, "Computer accessibility")
-    eq_(page.restrictions, [])  # Should be known to be empty
+    assert page.id == 10
+    assert page.title == "AccessibleComputing"
+    assert page.namespace == 0
+    assert page.redirect == "Computer accessibility"
+    assert page.restrictions == []  # Should be known to be empty
 
     revision = next(page)
-    eq_(revision.id, 233192)
-    eq_(revision.page, page)
+    assert revision.id == 233192
+    assert revision.page == page
 
     revision = next(page)
-    eq_(revision.id, 862220)
+    assert revision.id == 862220
 
 
 def test_old_page():
@@ -80,7 +78,7 @@ def test_old_page():
     """
     page = Page.from_element(ElementIterator.from_string(XML),
                              {"Talk": Namespace(1, "Talk")})
-    eq_(page.namespace, 1)
+    assert page.namespace == 1
 
 
 def test_page_with_discussion():
@@ -119,7 +117,7 @@ def test_page_with_discussion():
     """
     page = Page.from_element(ElementIterator.from_string(XML),
                              {"Talk": Namespace(1, "Talk")})
-    eq_(page.namespace, 1)
+    assert page.namespace == 1
 
     revision = next(page)
-    eq_(revision.id, 862220)
+    assert revision.id == 862220
