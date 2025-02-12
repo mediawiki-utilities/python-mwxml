@@ -114,7 +114,7 @@ def normalize_title(title):
 
 def extract_namespace(page_name, namespace_map):
     title_parts = page_name.split(":", 1)
-    if len(title_parts) == 1:
+    if len(title_parts) == 1 or namespace_map is None or title_parts[1].startswith(" "):
         return 0, normalize_title(page_name)
     else:
         ns_name, split_title = title_parts

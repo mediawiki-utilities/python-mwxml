@@ -54,6 +54,51 @@ def test_page():
     revision = next(page)
     assert revision.id == 862220
 
+def test_page_with_colon_in_title():
+    XML = """
+    <page>
+        <title>Accessible: Computing</title>
+        <ns>0</ns>
+        <id>10</id>
+        <redirect title="Computer accessibility" />
+        <revision>
+          <id>233192</id>
+          <timestamp>2001-01-21T02:12:21Z</timestamp>
+          <contributor>
+            <username>RoseParks</username>
+            <id>99</id>
+          </contributor>
+          <comment>*</comment>
+          <model>wikitext</model>
+          <format>text/x-wiki</format>
+          <text xml:space="preserve">Text of rev 233192</text>
+          <sha1>8kul9tlwjm9oxgvqzbwuegt9b2830vw</sha1>
+        </revision>
+    </page>
+    """
+    # When namespace_map is empty, it works:
+    page = Page.from_element(ElementIterator.from_string(XML))
+    assert page.id == 10
+    assert page.title == "Accessible: Computing"
+    assert page.namespace == 0
+    assert page.redirect == "Computer accessibility"
+    assert page.restrictions == []  # Should be known to be empty
+
+    revision = next(page)
+    assert revision.id == 233192
+    assert revision.page == page
+
+    # And when it's present, it still works the same:
+    page = Page.from_element(ElementIterator.from_string(XML), namespace_map={})
+    assert page.id == 10
+    assert page.title == "Accessible: Computing"
+    assert page.namespace == 0
+    assert page.redirect == "Computer accessibility"
+    assert page.restrictions == []  # Should be known to be empty
+
+    revision = next(page)
+    assert revision.id == 233192
+    assert revision.page == page
 
 def test_old_page():
     XML = """
