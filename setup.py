@@ -27,7 +27,6 @@ setup(
     },
     long_description=open('README.md').read(),
     install_requires=requirements("requirements.txt"),
-    test_suite='nose.collector',
     classifiers=[
         "Programming Language :: Python",
         "Programming Language :: Python :: 3",
