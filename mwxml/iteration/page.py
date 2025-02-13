@@ -95,7 +95,7 @@ class Page(mwtypes.Page):
 
         # Normalize title and extract namespace
         mapped_namespace, title = extract_namespace(page_name, namespace_map)
-        if namespace is not None and mapped_namespace != namespace:
+        if namespace is not None and mapped_namespace != namespace and namespace_map is not None:
             logger.warning("Namespace id conflict detected.  " +
                         "<title>={0}, ".format(page_name) +
                         "<namespace>={0}, ".format(namespace) +
