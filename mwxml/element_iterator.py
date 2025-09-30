@@ -55,7 +55,12 @@ class ElementIterator:
     def __iter__(self):
 
         while not self.done and self.pointer.depth() > self.depth:
-            event, element = next(self.pointer)
+            try:
+                event, element = next(self.pointer)
+            except StopIteration:
+                # Stream exhausted - this is normal completion
+                # PEP 479: Catch StopIteration to prevent it from escaping the generator
+                break
 
             if event == "start":
                 sub_iterator = ElementIterator(element, self.pointer)
@@ -69,7 +74,12 @@ class ElementIterator:
     def complete(self):
 
         while not self.done and self.pointer.depth() > self.depth:
-            event, element = next(self.pointer)
+            try:
+                event, element = next(self.pointer)
+            except StopIteration:
+                # Stream exhausted - this is normal completion
+                # PEP 479: Catch StopIteration to prevent it from escaping the generator
+                break
             if self.pointer.depth() > self.depth:
                 element.clear()
 
