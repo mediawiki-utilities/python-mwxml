@@ -94,14 +94,11 @@ class Page(mwtypes.Page):
         revisions = cls.load_revisions(first_revision, element)
 
         # Normalize title and extract namespace
-        mapped_namespace, title = extract_namespace(page_name, namespace_map)
-        if namespace is not None and mapped_namespace != namespace and namespace_map is not None:
-            logger.warning("Namespace id conflict detected.  " +
-                        "<title>={0}, ".format(page_name) +
-                        "<namespace>={0}, ".format(namespace) +
-                        "mapped_namespace={0}".format(mapped_namespace))
-
-        namespace = namespace or mapped_namespace
+        if namespace is not None:
+            # Always trust the <ns> tag as authoritative
+            title = normalize_title(page_name)
+        else:
+            namespace, title = extract_namespace(page_name, namespace_map)
 
         # Construct class
         return cls(id, title, namespace, redirect=redirect,
