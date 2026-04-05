@@ -29,13 +29,16 @@ def test_log_item():
     assert (log_item.comment ==
         "content was: '#redirect [[Template:UserBrockert]]', an old " +
         "experiment of mine, now being moved around by bots")
+    assert log_item.user is not None
     assert log_item.user.id == 50095
     assert log_item.user.text == "Brockert"
+    assert log_item.page is not None
     assert log_item.page.namespace == 10
     assert log_item.page.title == "UserBrockert"
     assert log_item.type == "delete"
     assert log_item.action == "delete"
     assert log_item.params == None
+    assert log_item.deleted is not None
     assert log_item.deleted.action == None
     assert log_item.deleted.user == False
     assert log_item.deleted.comment == False
@@ -58,5 +61,6 @@ def test_log_item():
     """  # noqa
     log_item = LogItem.from_element(
         ElementIterator.from_string(NULL_TITLE_XML))
+    assert log_item.page is not None
     assert log_item.page.namespace == None
     assert log_item.page.title == None
