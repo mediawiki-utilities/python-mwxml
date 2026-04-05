@@ -55,6 +55,7 @@ class Page(mwtypes.Page):
     @classmethod
     def from_element(cls, element, namespace_map=None):
         title = None
+        page_name = None
         namespace = None
         id = None
         redirect = None
