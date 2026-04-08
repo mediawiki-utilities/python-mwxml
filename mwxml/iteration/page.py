@@ -26,18 +26,14 @@ class Page(mwtypes.Page):
         super().initialize(*args, **kwargs)
 
         # Should be a lazy generator
-        self.__revisions = revisions
+        self.__revisions = revisions or iter(())
 
     def __iter__(self):
-        assert self.__revisions is not None
-
         for revision in self.__revisions:
             revision.page = self
             yield revision
 
     def __next__(self):
-        assert self.__revisions is not None
-
         revision = next(self.__revisions)
         revision.page = self
         return revision
