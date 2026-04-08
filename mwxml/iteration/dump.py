@@ -119,7 +119,7 @@ class Dump:
             # this long comment to warn whoever ends up maintaining this.
             else:
                 raise MalformedXML("Unexpected tag found when processing " +
-                                   "a <mediawiki>: '{0}'".format(tag))
+                                   "a <mediawiki>: '{0}'".format(sub_element.tag))
 
         namespace_map = None
         if site_info.namespaces is not None:
