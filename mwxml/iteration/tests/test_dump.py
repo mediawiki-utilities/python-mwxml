@@ -76,7 +76,7 @@ def test_complete():
 
     page = next(dump)
     assert isinstance(page, Page)
-    assert page.title == "Bar"
+    assert page.title == "Talk:Bar"
     assert page.namespace == 1
     assert page.id == 2
     assert page.redirect == "Computer accessibility"
@@ -104,7 +104,7 @@ def test_skipping():
     assert page.id == 1
 
     page = next(dump)
-    assert page.title == "Bar"
+    assert page.title == "Talk:Bar"
     assert page.namespace == 1
     assert page.id == 2
 
