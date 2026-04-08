@@ -65,7 +65,7 @@ class Dump:
         """
 
         # Should be a lazy generator of page info
-        self.items = items or range(0)
+        self.items = iter(items) if items is not None else iter(())
         """
         An iterator of :class:`mwxml.Page` and/or
         :class:`mwxml.LogItem` elements
