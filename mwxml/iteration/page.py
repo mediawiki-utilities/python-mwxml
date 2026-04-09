@@ -26,7 +26,7 @@ class Page(mwtypes.Page):
         super().initialize(*args, **kwargs)
 
         # Should be a lazy generator
-        self.__revisions = revisions
+        self.__revisions = revisions or iter(())
 
     def __iter__(self):
         for revision in self.__revisions:
